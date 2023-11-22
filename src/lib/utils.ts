@@ -1,6 +1,10 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { EnergyConsumptionData } from "./types";
+import {
+  ArrayElement,
+  EnergyConsumptionData,
+  EnergyConsumptionDataElement,
+} from "./types";
 import { DateRange } from "react-day-picker";
 import { ChartProps } from "react-chartjs-2";
 
@@ -14,41 +18,125 @@ export const getTimeLabels = (data: EnergyConsumptionData) => {
     return item.data.length > acc.data.length ? item : acc;
   }, data[0]);
   // Get the labels from the longest dataset
-  const labels = longestDataset.data.map((item: any) => item[0]);
+  const labels = longestDataset.data.map(([timestamp]) => timestamp);
   return labels;
 };
 
-export const applyDateRangeFilter = (
+export const formatDatasets = (
   data: EnergyConsumptionData,
   dateRange: DateRange | undefined
-) => {
-  console.log("applyDateRangeFilter", dateRange);
-  if (!dateRange?.from || !dateRange?.to) {
-    return data.map((dataset) => ({
-      // ...dataset,
-      color: dataset.color,
-      data: dataset.data,
-    }));
+): ChartProps["data"]["datasets"] => {
+  if (!data.length) return [];
+
+  const basicDatasets = formatBasicDatasets(data);
+  const timeFilteredDatasets = applyDateRangeFilter(basicDatasets, dateRange);
+  const filteredDatasets = applyValueDivider(timeFilteredDatasets);
+
+  return filteredDatasets;
+};
+
+const formatBasicDatasets = (
+  data: EnergyConsumptionData
+): Array<
+  ArrayElement<ChartProps["data"]["datasets"]> & {
+    datasetType: EnergyConsumptionDataElement["type"];
+    tooltip: EnergyConsumptionDataElement["data"];
   }
+> => {
+  if (!data.length) return [];
+
+  const basicDatasets = data
+    .map((item: EnergyConsumptionDataElement) => {
+      return {
+        datasetType: item.type,
+        label: item.label,
+        backgroundColor: item.color,
+        data: item.data.map(([timestamp, value]) => [timestamp, value]),
+        tooltip: item.data.map(([timestamp, value]) => [timestamp, value]) as [
+          number,
+          number
+        ][],
+        ...(item.type === "total" && {
+          data: new Array(item.data.length).fill(0.1),
+          borderWidth: 10,
+          borderColor: item.color,
+        }),
+      };
+    })
+    .sort((a) => {
+      return a.datasetType === "total" ? 1 : -1;
+    });
+  return basicDatasets;
+};
+
+export const applyDateRangeFilter = (
+  datasets: Array<
+    ArrayElement<ChartProps["data"]["datasets"]> & {
+      datasetType: EnergyConsumptionDataElement["type"];
+      tooltip: EnergyConsumptionDataElement["data"];
+    }
+  >,
+  dateRange: DateRange | undefined
+): Array<
+  ArrayElement<ChartProps["data"]["datasets"]> & {
+    datasetType: EnergyConsumptionDataElement["type"];
+    tooltip: EnergyConsumptionDataElement["data"];
+  }
+> => {
+  if (!dateRange || !dateRange.from || !dateRange.to) return datasets;
+
   const { from, to } = dateRange;
 
-  const [startDateTimestamp, endDateTimestamp] = [from.getTime(), to.getTime()];
-  console.log(
-    "📆 applyDateRangeFilter",
-    from,
-    to,
-    startDateTimestamp,
-    endDateTimestamp
-  );
+  const startFilterRangeTimestamp = from.getTime();
+  const endFilterRangeTimestamp = to.getTime();
 
-  const filteredDataSets: ChartProps["data"]["datasets"] = data.map(
-    (dataset) => ({
-      // ...dataset,
-      data: dataset.data.filter(([timeStamp]) => {
-        return startDateTimestamp <= timeStamp && timeStamp <= endDateTimestamp;
-      }),
-    })
-  );
+  const filteredDataSets = datasets.map((dataset) => {
+    const filteredData = dataset.data?.filter((item) => {
+      if (!item || !Array.isArray(item)) return false;
+      const timestamp = item[0];
+      return (
+        startFilterRangeTimestamp <= timestamp &&
+        timestamp <= endFilterRangeTimestamp
+      );
+    });
+    return {
+      ...dataset,
+      data: filteredData,
+    };
+  });
 
   return filteredDataSets;
+};
+
+const applyValueDivider = (
+  datasets: Array<
+    ArrayElement<ChartProps["data"]["datasets"]> & {
+      datasetType: EnergyConsumptionDataElement["type"];
+      tooltip: ArrayElement<ChartProps["data"]["datasets"]>["data"];
+    }
+  >,
+  divider = 1000000
+) => {
+  if (!datasets.length) return [];
+
+  const formattedDatasets = datasets.map((dataset) => {
+    const formattedValues = dataset.data?.map((datum) => {
+      if (!datum || !Array.isArray(datum)) return datum;
+      const value = datum[1];
+      return dataset.datasetType === "total" ? value : value / divider;
+    });
+    const formattedtooltips = dataset.tooltip?.map((datum) => {
+      if (!datum || !Array.isArray(datum)) return datum;
+      const value = datum[1];
+      return value / divider;
+    });
+
+    return {
+      ...dataset,
+      data: formattedValues,
+      tooltip: formattedtooltips,
+    };
+  });
+
+  return formattedDatasets;
 };
