@@ -1,5 +1,5 @@
 import { useEnergyConsumption } from "@/hooks/useEnergyData";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { formatDatasets, getTimeLabels } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
 import { useProjects } from "@/hooks/useProjects";
@@ -27,6 +27,11 @@ export const DataContextProvider: React.FC<{
   const [selecteDdateRange, setDateRangeFilter] = useState<
     DateRange | undefined
   >(undefined);
+
+  // Reset date range filter when building changes, we might want to keep current values
+  useEffect(() => {
+    setDateRangeFilter(undefined);
+  }, [currentBuilding?.uuid]);
 
   if (!fetchedData.length) {
     return null;
