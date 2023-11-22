@@ -11,11 +11,21 @@ const DataContext = React.createContext<{
   setDateRangeFilter: (dateRange: DateRange | undefined) => void;
   selectedDateRange: DateRange | undefined;
   selectableDateRange: DateRange | undefined;
+  temporalAggregation: {
+    selectedTemporalAggregation: "day" | "week" | "month" | "year";
+    setSelectedTemporalAggregation: React.Dispatch<
+      React.SetStateAction<"day" | "week" | "month" | "year">
+    >;
+  };
 }>({
   data: null,
   setDateRangeFilter: () => {},
   selectedDateRange: undefined,
   selectableDateRange: undefined,
+  temporalAggregation: {
+    selectedTemporalAggregation: "day",
+    setSelectedTemporalAggregation: () => {},
+  },
 });
 
 export const DataContextProvider: React.FC<{
@@ -27,6 +37,8 @@ export const DataContextProvider: React.FC<{
   const [selecteDdateRange, setDateRangeFilter] = useState<
     DateRange | undefined
   >(undefined);
+  const [selectedTemporalAggregation, setSelectedTemporalAggregation] =
+    useState<"day" | "week" | "month" | "year">("day");
 
   // Reset date range filter when building changes, we might want to keep current values
   useEffect(() => {
@@ -41,7 +53,7 @@ export const DataContextProvider: React.FC<{
     setDateRangeFilter(dateRange);
   };
 
-  const labels = getTimeLabels(fetchedData);
+  const labels = getTimeLabels(fetchedData, selectedTemporalAggregation);
 
   const formatedDatasets = formatDatasets(fetchedData, selecteDdateRange);
 
@@ -62,6 +74,10 @@ export const DataContextProvider: React.FC<{
         selectedDateRange: selecteDdateRange || selectableDateRange,
         selectableDateRange,
         setDateRangeFilter: handleDateRangeSelection,
+        temporalAggregation: {
+          selectedTemporalAggregation,
+          setSelectedTemporalAggregation,
+        },
       }}
     >
       {children}
@@ -70,7 +86,18 @@ export const DataContextProvider: React.FC<{
 };
 
 export const useDataContext = () => {
-  const { data, setDateRangeFilter, selectedDateRange, selectableDateRange } =
-    React.useContext(DataContext);
-  return { data, setDateRangeFilter, selectedDateRange, selectableDateRange };
+  const {
+    data,
+    setDateRangeFilter,
+    selectedDateRange,
+    selectableDateRange,
+    temporalAggregation,
+  } = React.useContext(DataContext);
+  return {
+    data,
+    setDateRangeFilter,
+    selectedDateRange,
+    selectableDateRange,
+    temporalAggregation,
+  };
 };
