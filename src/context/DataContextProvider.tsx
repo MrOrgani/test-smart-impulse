@@ -1,18 +1,21 @@
 import { useEnergyConsumption } from "@/hooks/useEnergyData";
-import React, { useMemo, useState } from "react";
-import { useLocation } from "react-router-dom";
-import { applyDateRangeFilter, getTimeLabels } from "@/lib/utils";
-import { ChartProps } from "react-chartjs-2";
-import { EnergyConsumptionData } from "@/lib/types";
+import React, { useState } from "react";
+import { formatDatasets, getTimeLabels } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
 import { useProjects } from "@/hooks/useProjects";
+import * as d3 from "d3";
+import dayjs from "dayjs";
 
 const DataContext = React.createContext<{
   data: any | null;
   setDateRangeFilter: (dateRange: DateRange | undefined) => void;
+  selectedDateRange: DateRange | undefined;
+  selectableDateRange: DateRange | undefined;
 }>({
   data: null,
   setDateRangeFilter: () => {},
+  selectedDateRange: undefined,
+  selectableDateRange: undefined,
 });
 
 export const DataContextProvider: React.FC<{
@@ -21,24 +24,28 @@ export const DataContextProvider: React.FC<{
   const { currentBuilding } = useProjects();
   const fetchedData = useEnergyConsumption(currentBuilding?.uuid);
 
-  const [dataRangeFilter, setDateRangeFilter] = useState<DateRange | undefined>(
-    undefined
-  );
+  const [selecteDdateRange, setDateRangeFilter] = useState<
+    DateRange | undefined
+  >(undefined);
 
   if (!fetchedData.length) {
     return null;
   }
 
   const handleDateRangeSelection = (dateRange: DateRange | undefined): void => {
-    if (!dateRange || !dateRange?.from || !dateRange?.to) {
-      return;
-    }
     setDateRangeFilter(dateRange);
   };
 
   const labels = getTimeLabels(fetchedData);
 
-  const formatedDatasets = applyDateRangeFilter(fetchedData, dataRangeFilter);
+  const formatedDatasets = formatDatasets(fetchedData, selecteDdateRange);
+
+  const selectableDateExtendArray = d3.extent(labels as number[]);
+
+  const selectableDateRange = {
+    from: dayjs(selectableDateExtendArray[0]).toDate(),
+    to: dayjs(selectableDateExtendArray[1]).toDate(),
+  };
 
   return (
     <DataContext.Provider
@@ -47,6 +54,8 @@ export const DataContextProvider: React.FC<{
           labels,
           datasets: formatedDatasets,
         },
+        selectedDateRange: selecteDdateRange || selectableDateRange,
+        selectableDateRange,
         setDateRangeFilter: handleDateRangeSelection,
       }}
     >
@@ -56,6 +65,7 @@ export const DataContextProvider: React.FC<{
 };
 
 export const useDataContext = () => {
-  const { data, setDateRangeFilter } = React.useContext(DataContext);
-  return { data, setDateRangeFilter };
+  const { data, setDateRangeFilter, selectedDateRange, selectableDateRange } =
+    React.useContext(DataContext);
+  return { data, setDateRangeFilter, selectedDateRange, selectableDateRange };
 };
