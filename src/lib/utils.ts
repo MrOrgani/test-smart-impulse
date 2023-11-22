@@ -7,32 +7,207 @@ import {
 } from "./types";
 import { DateRange } from "react-day-picker";
 import { ChartProps } from "react-chartjs-2";
+import dayjs from "dayjs";
+import weekOfYear from "dayjs/plugin/weekOfYear";
+
+dayjs.extend(weekOfYear);
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const getTimeLabels = (data: EnergyConsumptionData) => {
+export const getTimeLabels = (
+  data: EnergyConsumptionData,
+  aggregationType: "day" | "week" | "month" | "year" = "day"
+) => {
   // Get index values from the longest dataset
   const longestDataset = data.reduce((acc, item) => {
     return item.data.length > acc.data.length ? item : acc;
   }, data[0]);
+
   // Get the labels from the longest dataset
-  const labels = longestDataset.data.map(([timestamp]) => timestamp);
-  return labels;
+  const timestamps = longestDataset.data.map(([timestamp]) => timestamp);
+
+  const aggregatedTimestamps = aggregateTimestamps(timestamps, aggregationType);
+
+  return aggregatedTimestamps;
+};
+
+const aggregateTimestamps = (
+  timestamps: number[],
+  aggregationType: "day" | "week" | "month" | "year"
+): number[] => {
+  const aggregatedTimestamps: number[] = [];
+
+  timestamps.forEach((timestamp) => {
+    const date = new Date(timestamp);
+
+    switch (aggregationType) {
+      case "day":
+        const aggregatedTimestamp = new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate()
+        ).getTime();
+        if (!aggregatedTimestamps.includes(aggregatedTimestamp)) {
+          aggregatedTimestamps.push(aggregatedTimestamp);
+        }
+        break;
+      case "week":
+        const firstDayOfWeek = date.getDate() - date.getDay();
+        const aggregatedTimestamp2 = new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          firstDayOfWeek
+        ).getTime();
+        if (!aggregatedTimestamps.includes(aggregatedTimestamp2)) {
+          aggregatedTimestamps.push(aggregatedTimestamp2);
+        }
+        break;
+      case "month":
+        const aggregatedTimestamp3 = new Date(
+          date.getFullYear(),
+          date.getMonth()
+        ).getTime();
+        if (!aggregatedTimestamps.includes(aggregatedTimestamp3)) {
+          aggregatedTimestamps.push(aggregatedTimestamp3);
+        }
+        break;
+      case "year":
+        const aggregatedTimestamp4 = new Date(date.getFullYear(), 0).getTime();
+        if (!aggregatedTimestamps.includes(aggregatedTimestamp4)) {
+          aggregatedTimestamps.push(aggregatedTimestamp4);
+        }
+        break;
+    }
+  });
+
+  return aggregatedTimestamps;
+};
+
+const aggregateDatasets = (
+  datasets: Array<
+    ArrayElement<ChartProps["data"]["datasets"]> & {
+      datasetType: EnergyConsumptionDataElement["type"];
+      tooltip: EnergyConsumptionDataElement["data"];
+    }
+  >,
+  aggregationType: "day" | "week" | "month" | "year" = "day"
+) => {
+  if (!datasets.length) return [];
+
+  const aggregatedDatasets = datasets.map((dataset) => {
+    const aggregatedTimestamps = new Map<number, number>();
+    dataset.data.forEach((datum) => {
+      if (!datum || !Array.isArray(datum)) return datum;
+      const [timestamp, value] = datum;
+      const date = new Date(timestamp);
+
+      switch (aggregationType) {
+        case "day":
+          const aggregatedTimestamp = new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate()
+          ).getTime();
+          if (aggregatedTimestamps.get(aggregatedTimestamp)) {
+            aggregatedTimestamps.set(
+              aggregatedTimestamp,
+              aggregatedTimestamps.get(aggregatedTimestamp)! + value
+            );
+          } else {
+            aggregatedTimestamps.set(aggregatedTimestamp, value);
+          }
+          break;
+        case "week":
+          const firstDayOfWeek = date.getDate() - date.getDay();
+          const aggregatedTimestamp2 = new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            firstDayOfWeek
+          ).getTime();
+          if (aggregatedTimestamps.get(aggregatedTimestamp2)) {
+            aggregatedTimestamps.set(
+              aggregatedTimestamp2,
+              aggregatedTimestamps.get(aggregatedTimestamp2)! + value || 0
+            );
+          } else {
+            aggregatedTimestamps.set(aggregatedTimestamp2, value);
+          }
+          break;
+        case "month":
+          const aggregatedTimestamp3 = new Date(
+            date.getFullYear(),
+            date.getMonth()
+          ).getTime();
+          if (aggregatedTimestamps.get(aggregatedTimestamp3)) {
+            aggregatedTimestamps.set(
+              aggregatedTimestamp3,
+              aggregatedTimestamps.get(aggregatedTimestamp3)! + value || 0
+            );
+          } else {
+            aggregatedTimestamps.set(aggregatedTimestamp3, value);
+          }
+          break;
+        case "year":
+          const aggregatedTimestamp4 = new Date(
+            date.getFullYear(),
+            0
+          ).getTime();
+          if (aggregatedTimestamps.get(aggregatedTimestamp4)) {
+            aggregatedTimestamps.set(
+              aggregatedTimestamp4,
+              aggregatedTimestamps.get(aggregatedTimestamp4)! + value || 0
+            );
+          } else {
+            aggregatedTimestamps.set(aggregatedTimestamp4, value);
+          }
+          break;
+      }
+    });
+
+    console.log("aggregatedDatasets", [...aggregatedTimestamps.entries()]);
+
+    // reduce the aggregated and summ the values
+
+    const aggregatedDataMap = [...aggregatedTimestamps.entries()].reduce(
+      (acc, item) => {
+        if (!item || !Array.isArray(item)) return acc;
+        const timestamp = item[0];
+        const value = item[1];
+        return acc.set(timestamp, (acc.get(timestamp) || 0) + value);
+      },
+      new Map<number, number>()
+    );
+
+    // console.log("aggregatedData", [...aggregatedDataMap.entries()]);
+    return {
+      ...dataset,
+      data: [...aggregatedDataMap.entries()],
+    };
+  });
+
+  return aggregatedDatasets;
 };
 
 export const formatDatasets = (
   data: EnergyConsumptionData,
   dateRange: DateRange | undefined
-): ChartProps["data"]["datasets"] => {
+): Array<
+  ArrayElement<ChartProps["data"]["datasets"]> & {
+    datasetType: EnergyConsumptionDataElement["type"];
+    tooltip: number[];
+  }
+> => {
   if (!data.length) return [];
 
   const basicDatasets = formatBasicDatasets(data);
+  debugger;
   const timeFilteredDatasets = applyDateRangeFilter(basicDatasets, dateRange);
-  const filteredDatasets = applyValueDivider(timeFilteredDatasets);
+  const aggregatedDatasets = aggregateDatasets(timeFilteredDatasets);
+  const formattedDatasets = applyValueDivider(aggregatedDatasets);
 
-  return filteredDatasets;
+  return formattedDatasets;
 };
 
 const getMaxValue = (data: EnergyConsumptionData) => {
@@ -134,7 +309,7 @@ const applyValueDivider = (
   datasets: Array<
     ArrayElement<ChartProps["data"]["datasets"]> & {
       datasetType: EnergyConsumptionDataElement["type"];
-      tooltip: ArrayElement<ChartProps["data"]["datasets"]>["data"];
+      tooltip: EnergyConsumptionDataElement["data"];
     }
   >,
   divider = 1000000

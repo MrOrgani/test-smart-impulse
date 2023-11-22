@@ -32,7 +32,7 @@ export const DataContextProvider: React.FC<{
   children: React.ReactElement;
 }> = ({ children }) => {
   const { currentBuilding } = useProjects();
-  const fetchedData = useEnergyConsumption(currentBuilding?.uuid);
+  const [, fetchedData] = useEnergyConsumption(currentBuilding?.uuid);
 
   const [selecteDdateRange, setDateRangeFilter] = useState<
     DateRange | undefined
@@ -45,7 +45,8 @@ export const DataContextProvider: React.FC<{
     setDateRangeFilter(undefined);
   }, [currentBuilding?.uuid]);
 
-  if (!fetchedData.length) {
+  // if (![fetchedData]?.length) {
+  if (!fetchedData) {
     return null;
   }
 
@@ -53,9 +54,10 @@ export const DataContextProvider: React.FC<{
     setDateRangeFilter(dateRange);
   };
 
-  const labels = getTimeLabels(fetchedData, selectedTemporalAggregation);
+  const labels = getTimeLabels([fetchedData], selectedTemporalAggregation);
+  console.log("fetchedData", fetchedData, labels);
 
-  const formatedDatasets = formatDatasets(fetchedData, selecteDdateRange);
+  const formatedDatasets = formatDatasets([fetchedData], selecteDdateRange);
 
   const selectableDateExtendArray = d3.extent(labels as number[]);
 
