@@ -40,6 +40,11 @@ export type EnergyConsumptionData = Array<
   )
 >;
 
+export type ArrayElement<ArrayType extends readonly unknown[]> =
+  ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
+
+export type EnergyConsumptionDataElement = ArrayElement<EnergyConsumptionData>;
+
 export type IBuilding = {
   name: string;
   timezone: string;
