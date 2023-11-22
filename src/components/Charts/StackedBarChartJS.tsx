@@ -82,7 +82,7 @@ export const StackedBarChartJS = () => {
                 // Include a dollar sign in the ticks
                 callback: function (value, index, ticks) {
                   // display labels depending on the selected temporal aggregation
-                  return dayjs(data?.labels?.[index]).format("DD/MM/YYYY");
+                  return dayjs(data?.labels?.[value]).format("DD/MM/YYYY");
                 },
               },
             },
