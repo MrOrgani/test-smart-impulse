@@ -6,6 +6,7 @@ import { useProjects } from "@/hooks/useProjects";
 import * as dayjs from "dayjs";
 import { DatePickerWithRange } from "../DateRangePicker";
 import { ResetButton } from "../ResetButton";
+import { TemporalAggregationSelector } from "../TemporalAggregationSelector";
 
 ChartJS.register(...registerables, zoomPlugin);
 
@@ -27,6 +28,7 @@ export const StackedBarChartJS = () => {
             onChange={setDateRangeFilter}
             selectedDateRange={selectedDateRange}
           />
+          <TemporalAggregationSelector />
           <ResetButton />
         </div>
       )}
