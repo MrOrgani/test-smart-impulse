@@ -29,8 +29,8 @@ export const DatePickerWithRange: React.FC<DatePickerProps> = ({
 }) => {
   const [dateRange, setDateRange] = React.useState<DateRange | undefined>();
   const disabledDays = {
-    before: dayjs(selectedDateRange?.from).toDate(),
-    after: dayjs(selectedDateRange?.to).toDate(),
+    before: dayjs(selectableDateRange?.from).toDate(),
+    after: dayjs(selectableDateRange?.to).toDate(),
   };
 
   if (!selectableDateRange?.from || !selectableDateRange?.to) {
