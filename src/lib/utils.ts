@@ -51,15 +51,20 @@ const formatBasicDatasets = (
         datasetType: item.type,
         label: item.label,
         backgroundColor: item.color,
-        data: item.data.map(([timestamp, value]) => [timestamp, value]),
+        data: item.data.map(([timestamp, value]) => [timestamp, value]) as [
+          number,
+          number
+        ][],
         tooltip: item.data.map(([timestamp, value]) => [timestamp, value]) as [
           number,
           number
         ][],
         ...(item.type === "total" && {
-          data: new Array(item.data.length).fill(0.1),
-          borderWidth: 10,
-          borderColor: item.color,
+          grouped: false,
+          data: item.data.map(([timestamp]) => [timestamp, 0.1]) as [
+            number,
+            number
+          ][],
         }),
       };
     })
@@ -91,14 +96,14 @@ export const applyDateRangeFilter = (
   const endFilterRangeTimestamp = to.getTime();
 
   const filteredDataSets = datasets.map((dataset) => {
-    const filteredData = dataset.data?.filter((item) => {
-      if (!item || !Array.isArray(item)) return false;
+    const filteredData = dataset.data?.map((item) => {
+      if (!item || !Array.isArray(item)) return [0, 0];
       const timestamp = item[0];
-      return (
-        startFilterRangeTimestamp <= timestamp &&
+      return startFilterRangeTimestamp <= timestamp &&
         timestamp <= endFilterRangeTimestamp
-      );
-    });
+        ? item
+        : [timestamp, 0];
+    }) as EnergyConsumptionDataElement["data"];
     return {
       ...dataset,
       data: filteredData,
@@ -123,6 +128,7 @@ const applyValueDivider = (
     const formattedValues = dataset.data?.map((datum) => {
       if (!datum || !Array.isArray(datum)) return datum;
       const value = datum[1];
+      // return value / divider;
       return dataset.datasetType === "total" ? value : value / divider;
     });
     const formattedtooltips = dataset.tooltip?.map((datum) => {
