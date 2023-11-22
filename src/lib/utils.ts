@@ -35,6 +35,21 @@ export const formatDatasets = (
   return filteredDatasets;
 };
 
+const getMaxValue = (data: EnergyConsumptionData) => {
+  if (!data.length) return 0;
+
+  const allValues = data
+    .map((dataset) => {
+      return dataset.data.map((item) => {
+        if (!item || !Array.isArray(item)) return 0;
+        return item[1];
+      });
+    })
+    .flat();
+
+  return Math.max(...allValues.flat());
+};
+
 const formatBasicDatasets = (
   data: EnergyConsumptionData
 ): Array<
@@ -44,6 +59,8 @@ const formatBasicDatasets = (
   }
 > => {
   if (!data.length) return [];
+
+  const maxValue = getMaxValue(data);
 
   const basicDatasets = data
     .map((item: EnergyConsumptionDataElement) => {
@@ -61,10 +78,10 @@ const formatBasicDatasets = (
         ][],
         ...(item.type === "total" && {
           grouped: false,
-          data: item.data.map(([timestamp]) => [timestamp, 0.1]) as [
-            number,
-            number
-          ][],
+          data: item.data.map(([timestamp]) => [
+            timestamp,
+            maxValue / 100000000, // 100M, value to display the total dataset on top of the chart as a line
+          ]) as [number, number][],
         }),
       };
     })
@@ -128,7 +145,6 @@ const applyValueDivider = (
     const formattedValues = dataset.data?.map((datum) => {
       if (!datum || !Array.isArray(datum)) return datum;
       const value = datum[1];
-      // return value / divider;
       return dataset.datasetType === "total" ? value : value / divider;
     });
     const formattedtooltips = dataset.tooltip?.map((datum) => {
