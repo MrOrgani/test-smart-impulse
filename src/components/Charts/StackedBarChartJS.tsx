@@ -12,8 +12,13 @@ ChartJS.register(...registerables, zoomPlugin);
 
 export const StackedBarChartJS = () => {
   const { currentBuilding } = useProjects();
-  const { data, setDateRangeFilter, selectedDateRange, selectableDateRange } =
-    useDataContext();
+  const {
+    data,
+    setDateRangeFilter,
+    selectedDateRange,
+    selectableDateRange,
+    temporalAggregation: { selectedTemporalAggregation },
+  } = useDataContext();
 
   if (!data?.labels?.length) {
     return null;
@@ -57,9 +62,18 @@ export const StackedBarChartJS = () => {
             tooltip: {
               callbacks: {
                 title: function (context) {
-                  return dayjs(data?.labels?.[context[0].dataIndex]).format(
-                    "DD/MM/YYYY"
-                  );
+                  const date = dayjs(context[0].label).tz("Europe/Paris");
+                  switch (selectedTemporalAggregation) {
+                    case "day":
+                      return date.format("DD/MM/YYYY");
+                    case "week":
+                      console.log(date, date.week());
+                      return `w${date.week()} / ${date.format("YYYY")}`;
+                    case "month":
+                      return date.format("MM/YYYY");
+                    case "year":
+                      return date.format("YYYY");
+                  }
                 },
                 label: function (context) {
                   let label = context.dataset.label || "";
@@ -81,8 +95,19 @@ export const StackedBarChartJS = () => {
               ticks: {
                 // Include a dollar sign in the ticks
                 callback: function (value, index, ticks) {
-                  // display labels depending on the selected temporal aggregation
-                  return dayjs(data?.labels?.[value]).format("DD/MM/YYYY");
+                  const date = dayjs(data?.labels?.[value]).tz("Europe/Paris");
+
+                  switch (selectedTemporalAggregation) {
+                    case "day":
+                      return date.format("DD/MM/YYYY");
+                    case "week":
+                      console.log(date, date.week());
+                      return `w${date.week()} / ${date.format("YYYY")}`;
+                    case "month":
+                      return date.format("MM/YYYY");
+                    case "year":
+                      return date.format("YYYY");
+                  }
                 },
               },
             },
