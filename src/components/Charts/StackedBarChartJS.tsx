@@ -3,10 +3,9 @@ import { Chart as ChartJS, registerables } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import zoomPlugin from "chartjs-plugin-zoom";
 import { useProjects } from "@/hooks/useProjects";
-import * as d3 from "d3";
 import * as dayjs from "dayjs";
 import { DatePickerWithRange } from "../DateRangePicker";
-import { DateRange } from "react-day-picker";
+import { ResetButton } from "../ResetButton";
 
 ChartJS.register(...registerables, zoomPlugin);
 
@@ -22,16 +21,22 @@ export const StackedBarChartJS = () => {
   return (
     <div>
       {!!selectableDateRange && (
-        <DatePickerWithRange
-          selectableDateRange={selectableDateRange}
-          onChange={setDateRangeFilter}
-          selectedDateRange={selectedDateRange}
-        />
+        <div className="flex justify-between">
+          <DatePickerWithRange
+            selectableDateRange={selectableDateRange}
+            onChange={setDateRangeFilter}
+            selectedDateRange={selectedDateRange}
+          />
+          <ResetButton />
+        </div>
       )}
       <Chart
         type="bar"
         options={{
           plugins: {
+            legend: {
+              position: "bottom",
+            },
             zoom: {
               zoom: {
                 wheel: {
@@ -56,8 +61,6 @@ export const StackedBarChartJS = () => {
                 },
                 label: function (context) {
                   let label = context.dataset.label || "";
-                  console.log("lavbel", label);
-
                   if (label) {
                     label += ": ";
                   }
