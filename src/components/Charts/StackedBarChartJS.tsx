@@ -12,17 +12,21 @@ ChartJS.register(...registerables, zoomPlugin);
 
 export const StackedBarChartJS = () => {
   const { currentBuilding } = useProjects();
-  const { data, setDateRangeFilter } = useDataContext();
+  const { data, setDateRangeFilter, selectedDateRange, selectableDateRange } =
+    useDataContext();
 
   if (!data?.labels?.length) {
     return null;
   }
-  const [min, max] = d3.extent(data.labels as number[]);
 
   return (
     <div>
-      {!!min && !!max && (
-        <DatePickerWithRange range={[min, max]} onChange={setDateRangeFilter} />
+      {!!selectableDateRange && (
+        <DatePickerWithRange
+          selectableDateRange={selectableDateRange}
+          onChange={setDateRangeFilter}
+          selectedDateRange={selectedDateRange}
+        />
       )}
       <Chart
         type="bar"
@@ -45,8 +49,14 @@ export const StackedBarChartJS = () => {
             },
             tooltip: {
               callbacks: {
+                title: function (context) {
+                  return dayjs(data?.labels?.[context[0].dataIndex]).format(
+                    "DD/MM/YYYY"
+                  );
+                },
                 label: function (context) {
                   let label = context.dataset.label || "";
+                  console.log("lavbel", label);
 
                   if (label) {
                     label += ": ";
