@@ -30,6 +30,7 @@ export const DataContextProvider: React.FC<{
   const {
     temporalAggregation: { selectedTemporalAggregation },
     dateRangeFilter: { selectedDateRange, setDateRangeFilter },
+    measureUnitParams: { measureUnit },
   } = useDataParams();
 
   const labels = getTimeLabels(
@@ -42,7 +43,8 @@ export const DataContextProvider: React.FC<{
     fetchedData ?? [],
     selectedDateRange,
     selectedTemporalAggregation,
-    currentBuilding?.timezone ?? "Europe/Paris"
+    currentBuilding?.timezone ?? "Europe/Paris",
+    measureUnit
   );
 
   const selectableDateExtendArray = d3.extent(labels);
