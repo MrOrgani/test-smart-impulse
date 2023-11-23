@@ -45,7 +45,7 @@ export const DataContextProvider: React.FC<{
     setDateRangeFilter(undefined);
   }, [currentBuilding?.uuid]);
 
-  if (!fetchedData?.length) {
+  if (!fetchedData?.length || currentBuilding === undefined) {
     return null;
   }
 
@@ -53,12 +53,17 @@ export const DataContextProvider: React.FC<{
     setDateRangeFilter(dateRange);
   };
 
-  const labels = getTimeLabels(fetchedData, selectedTemporalAggregation);
+  const labels = getTimeLabels(
+    fetchedData,
+    selectedTemporalAggregation,
+    currentBuilding?.timezone
+  );
 
   const formatedDatasets = formatDatasets(
     fetchedData,
     selecteDdateRange,
-    selectedTemporalAggregation
+    selectedTemporalAggregation,
+    currentBuilding.timezone
   );
 
   const selectableDateExtendArray = d3.extent(labels);
