@@ -7,19 +7,16 @@ import {
   SelectItem,
 } from "./ui/select";
 import { useDataParams } from "@/context/DataParamsProvider";
+import { MeasureUnit } from "@/lib/types";
 
-const measurementUnitOptions = [
-  { label: "MWh", value: "MWh" },
-  { label: "kWh", value: "kWh" },
-  { label: "€", value: "euros" },
-];
+const measurementUnitOptions = { MWh: "MWh", kWh: "kWh", euros: "€" };
 
 interface Props {
-  options?: typeof measurementUnitOptions;
+  options?: [string, MeasureUnit][];
 }
 
 export const MeasurementUnitSelector: React.FC<Props> = ({
-  options = measurementUnitOptions,
+  options = Object.entries(measurementUnitOptions),
 }) => {
   const {
     measureUnitParams: { measureUnit, setMaesureUnit },
@@ -28,7 +25,7 @@ export const MeasurementUnitSelector: React.FC<Props> = ({
     <Select
       defaultValue={measureUnit}
       value={measureUnit}
-      onValueChange={(value) => setMaesureUnit(value)}
+      onValueChange={(value: MeasureUnit) => setMaesureUnit(value)}
     >
       <SelectTrigger
         id="temporalAggragtion"
@@ -39,9 +36,9 @@ export const MeasurementUnitSelector: React.FC<Props> = ({
         <SelectValue placeholder="Select" />
       </SelectTrigger>
       <SelectContent>
-        {options.map(({ label, value }) => (
-          <SelectItem key={label} value={value}>
-            {label}
+        {options.map(([label, value]) => (
+          <SelectItem key={label} value={label}>
+            {value}
           </SelectItem>
         ))}
       </SelectContent>

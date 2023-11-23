@@ -59,7 +59,7 @@ export type IBuiding = {
   timezone: string;
 };
 
-type MeasureUnit = "MWh" | "kWh" | "euros";
+export type MeasureUnit = "MWh" | "kWh" | "euros";
 export type MeasureUnitLabels = {
   [key in MeasureUnit]: string;
 };

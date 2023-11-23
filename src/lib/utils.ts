@@ -4,6 +4,7 @@ import {
   ArrayElement,
   EnergyConsumptionData,
   EnergyConsumptionDataElement,
+  MeasureUnitLabels,
   TemporalAggregations,
 } from "./types";
 import { DateRange } from "react-day-picker";
@@ -170,11 +171,23 @@ const aggregateDatasets = (
   return aggregatedDatasets;
 };
 
+const getValueModifier = (measureUnit: keyof MeasureUnitLabels) => {
+  switch (measureUnit) {
+    case "MWh":
+      return (value: number) => value / 1000000;
+    case "kWh":
+      return (value: number) => value / 1000;
+    case "euros":
+      return (value: number, MWhPrice = 83) => (value / 1000000) * MWhPrice;
+  }
+};
+
 export const formatDatasets = (
   data: EnergyConsumptionData,
   dateRange: DateRange | undefined,
   aggregationType: TemporalAggregations,
-  timezone: string
+  timezone: string,
+  measureUnit: keyof MeasureUnitLabels
 ): Array<
   ArrayElement<ChartProps["data"]["datasets"]> & {
     datasetType: EnergyConsumptionDataElement["type"];
@@ -190,7 +203,12 @@ export const formatDatasets = (
     aggregationType,
     timezone
   );
-  const formattedDatasets = applyValueDivider(aggregatedDatasets);
+
+  const valueModifier = getValueModifier(measureUnit);
+  const formattedDatasets = applyValueDivider(
+    aggregatedDatasets,
+    valueModifier
+  );
 
   return formattedDatasets;
 };
@@ -309,7 +327,7 @@ const applyValueDivider = (
       tooltip: EnergyConsumptionDataElement["data"];
     }
   >,
-  divider = 1000000
+  valueModifier: (value: number, MWhPrice?: number) => number
 ) => {
   if (!datasets.length) return [];
 
@@ -317,12 +335,12 @@ const applyValueDivider = (
     const formattedValues = dataset.data?.map((datum) => {
       if (!datum || !Array.isArray(datum)) return datum;
       const value = datum[1];
-      return dataset.datasetType === "total" ? value : value / divider;
+      return dataset.datasetType === "total" ? value : valueModifier(value);
     });
     const formattedtooltips = dataset.tooltip?.map((datum) => {
       if (!datum || !Array.isArray(datum)) return datum;
       const value = datum[1];
-      return value / divider;
+      return valueModifier(value);
     });
 
     return {
