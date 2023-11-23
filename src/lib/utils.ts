@@ -195,8 +195,9 @@ export const formatDatasets = (
   }
 > => {
   if (!data.length) return [];
+  const valueModifier = getValueModifier(measureUnit);
 
-  const basicDatasets = formatBasicDatasets(data);
+  const basicDatasets = formatBasicDatasets(data, valueModifier);
   const timeFilteredDatasets = applyDateRangeFilter(basicDatasets, dateRange);
   const aggregatedDatasets = aggregateDatasets(
     timeFilteredDatasets,
@@ -204,7 +205,6 @@ export const formatDatasets = (
     timezone
   );
 
-  const valueModifier = getValueModifier(measureUnit);
   const formattedDatasets = applyValueDivider(
     aggregatedDatasets,
     valueModifier
@@ -229,7 +229,8 @@ const getMaxValue = (data: EnergyConsumptionData) => {
 };
 
 const formatBasicDatasets = (
-  data: EnergyConsumptionData
+  data: EnergyConsumptionData,
+  valueModifier: (value: number) => number
 ): Array<
   ArrayElement<ChartProps["data"]["datasets"]> & {
     datasetType: EnergyConsumptionDataElement["type"];
@@ -258,7 +259,7 @@ const formatBasicDatasets = (
         ...(item.type === "total" && {
           data: item.data.map(([timestamp]) => [
             timestamp,
-            maxValue / 100000000, // 100M, value to display the total dataset on top of the chart as a line
+            valueModifier(maxValue) / 100, // 1% of the max value, only to display the total as a line
           ]) as [number, number][],
         }),
       };
