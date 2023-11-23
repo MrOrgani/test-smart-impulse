@@ -23,6 +23,7 @@ export const TemporalAggregationSelector = () => {
       </Label>
       <Select
         defaultValue={selectedTemporalAggregation}
+        value={selectedTemporalAggregation}
         onValueChange={(value) => setSelectedTemporalAggregation(value as any)}
       >
         <SelectTrigger id="temporalAggragtion">
