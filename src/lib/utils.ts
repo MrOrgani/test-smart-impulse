@@ -28,6 +28,7 @@ export const getTimeLabels = (
   aggregationType: TemporalAggregations,
   timezone: string
 ) => {
+  if (!data.length) return [];
   // Get index values from the longest dataset
   const longestDataset = data.reduce((acc, item) => {
     return item.data.length > acc.data.length ? item : acc;
