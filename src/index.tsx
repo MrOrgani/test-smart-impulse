@@ -16,22 +16,8 @@ root.render(
     <QueryProvider>
       <BrowserRouter>
         <Routes>
-          <Route
-            path="/"
-            element={
-              <Suspense fallback={"Loading..."}>
-                <App />
-              </Suspense>
-            }
-          >
-            <Route
-              path=":uuid"
-              element={
-                <Suspense fallback={"Loading..."}>
-                  <Dashboard />
-                </Suspense>
-              }
-            />
+          <Route path="/" element={<App />}>
+            <Route path=":uuid" element={<Dashboard />} />
           </Route>
         </Routes>
       </BrowserRouter>

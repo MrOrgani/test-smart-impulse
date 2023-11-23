@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { Header } from "./components/Header";
 import { Sidebar } from "./components/Sidebar";
 import { useProjects } from "./hooks/useProjects";
@@ -8,6 +8,9 @@ import { DataContextProvider } from "./context/DataContextProvider";
 
 function App() {
   const { buildings } = useProjects();
+  const location = useLocation();
+
+  console.log("App", buildings);
 
   return (
     <div
@@ -23,9 +26,13 @@ function App() {
               <Sidebar buildings={buildings} />
               <div className="col-span-3 lg:col-span-4 lg:border-l">
                 <div className="h-full px-4 py-6 lg:px-8">
-                  <DataContextProvider>
-                    <Outlet />
-                  </DataContextProvider>
+                  {location.pathname === "/" ? (
+                    <div>To define</div>
+                  ) : (
+                    <DataContextProvider>
+                      <Outlet />
+                    </DataContextProvider>
+                  )}
                 </div>
               </div>
             </div>
