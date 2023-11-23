@@ -3,8 +3,9 @@ import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { Header } from "./components/Header";
 import { Sidebar } from "./components/Sidebar";
-import { DataContextProvider } from "./context/DataContextProvider";
+import { DataContextProvider } from "./context/DataValueProvider";
 import { useProjects } from "./lib/react-query/queries";
+import { DataParamsProvider } from "./context/DataParamsProvider";
 
 function App() {
   const { data: buildings } = useProjects();
@@ -16,7 +17,7 @@ function App() {
         "container flex items-center justify-center mx-auto my-auto h-screen"
       }
     >
-      <div className={"h-3/4 bg-bg-300 rounded-md"}>
+      <div className={"bg-bg-300 rounded-md"}>
         <Header />
         <div className="border-t">
           <div className="">
@@ -27,9 +28,11 @@ function App() {
                   {location.pathname === "/" ? (
                     <div>To define</div>
                   ) : (
-                    <DataContextProvider>
-                      <Outlet />
-                    </DataContextProvider>
+                    <DataParamsProvider>
+                      <DataContextProvider>
+                        <Outlet />
+                      </DataContextProvider>
+                    </DataParamsProvider>
                   )}
                 </div>
               </div>
