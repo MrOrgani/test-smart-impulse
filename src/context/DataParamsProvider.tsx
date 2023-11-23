@@ -4,7 +4,37 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 
-const DataParamsContext = React.createContext<any>({});
+const DataParamsContext = React.createContext<{
+  temporalAggregation: {
+    selectedTemporalAggregation: TemporalAggregations;
+    setSelectedTemporalAggregation: (
+      temporalAggregation: TemporalAggregations
+    ) => void;
+  };
+  dateRangeFilter: {
+    selectedDateRange: DateRange | undefined;
+    setDateRangeFilter: (dateRange: DateRange | undefined) => void;
+  };
+  handleDateRangeSelection: (dateRange: DateRange | undefined) => void;
+  measureUnitParams: {
+    measureUnit: keyof MeasureUnitLabels;
+    setMaesureUnit: (measure: keyof MeasureUnitLabels) => void;
+  };
+}>({
+  temporalAggregation: {
+    selectedTemporalAggregation: "day",
+    setSelectedTemporalAggregation: () => {},
+  },
+  dateRangeFilter: {
+    selectedDateRange: undefined,
+    setDateRangeFilter: () => null,
+  },
+  handleDateRangeSelection: () => null,
+  measureUnitParams: {
+    measureUnit: "MWh",
+    setMaesureUnit: () => null,
+  },
+});
 
 export const DataParamsProvider: React.FC<{
   children: React.ReactElement;
