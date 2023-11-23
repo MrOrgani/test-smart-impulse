@@ -1,64 +1,133 @@
-import React from "react";
-import * as dc from "dc";
-import { scaleTime, timeMonth, timeMonths } from "d3";
-import { ChartTemplate, dateFormat, numberFormat } from "./ChartTemplate";
+import { useDataContext } from "@/context/DataContextProvider";
+import { Chart as ChartJS, registerables } from "chart.js";
+import { Chart } from "react-chartjs-2";
+import zoomPlugin from "chartjs-plugin-zoom";
+import { useProjects } from "@/hooks/useProjects";
+import * as dayjs from "dayjs";
+import { DatePickerWithRange } from "../DateRangePicker";
+import { ResetButton } from "../ResetButton";
+import { TemporalAggregationSelector } from "../TemporalAggregationSelector";
 
-const reducerAdd = (p, v) => {
-  ++p.days;
-  p.total += (v.open + v.close) / 2;
-  p.avg = Math.round(p.total / p.days);
-  return p;
+ChartJS.register(...registerables, zoomPlugin);
+
+export const StackedBarChart = () => {
+  const { currentBuilding } = useProjects();
+  const {
+    data,
+    setDateRangeFilter,
+    selectedDateRange,
+    selectableDateRange,
+    temporalAggregation: { selectedTemporalAggregation },
+  } = useDataContext();
+
+  if (!data?.labels?.length) {
+    return null;
+  }
+
+  return (
+    <div>
+      {!!selectableDateRange && (
+        <div className="flex justify-between">
+          <DatePickerWithRange
+            selectableDateRange={selectableDateRange}
+            onChange={setDateRangeFilter}
+            selectedDateRange={selectedDateRange}
+          />
+          <TemporalAggregationSelector />
+          <ResetButton />
+        </div>
+      )}
+      <Chart
+        type="bar"
+        options={{
+          plugins: {
+            legend: {
+              position: "bottom",
+            },
+            zoom: {
+              zoom: {
+                wheel: {
+                  enabled: true,
+                },
+                pinch: {
+                  enabled: true,
+                },
+                mode: "x",
+              },
+            },
+            title: {
+              display: true,
+              text: `Consommation ${currentBuilding?.name}`,
+            },
+            tooltip: {
+              callbacks: {
+                title: function (context) {
+                  const date = dayjs(context[0].label).tz(
+                    currentBuilding?.timezone
+                  );
+                  switch (selectedTemporalAggregation) {
+                    case "day":
+                      return date.format("DD/MM/YYYY");
+                    case "week":
+                      console.log(date, date.week());
+                      return `w${date.week()} / ${date.format("YYYY")}`;
+                    case "month":
+                      return date.format("MM/YYYY");
+                    case "year":
+                      return date.format("YYYY");
+                  }
+                },
+                label: function (context) {
+                  let label = context.dataset.label || "";
+                  if (label) {
+                    label += ": ";
+                  }
+                  if (context.parsed.x !== null) {
+                    label += context.dataset.tooltip[context.parsed.x] + " MWh";
+                  }
+                  return label;
+                },
+              },
+            },
+          },
+          responsive: true,
+          scales: {
+            x: {
+              stacked: true,
+              ticks: {
+                // Include a dollar sign in the ticks
+                callback: function (value, index, ticks) {
+                  const date = dayjs(data?.labels?.[value]).tz(
+                    currentBuilding?.timezone
+                  );
+
+                  switch (selectedTemporalAggregation) {
+                    case "day":
+                      return date.format("DD/MM/YYYY");
+                    case "week":
+                      console.log(date, date.week());
+                      return `w${date.week()} / ${date.format("YYYY")}`;
+                    case "month":
+                      return date.format("MM/YYYY");
+                    case "year":
+                      return date.format("YYYY");
+                  }
+                },
+              },
+            },
+            y: {
+              stacked: true,
+              ticks: {
+                callback: function (value, index, values) {
+                  // This function will be called for each tick
+                  return value + " Mwh"; // Replace this with your own logic
+                },
+              },
+            },
+          },
+        }}
+        data={data}
+      />
+    </div>
+  );
 };
-
-const reducerRemove = (p, v) => {
-  --p.days;
-  p.total -= (v.open + v.close) / 2;
-  p.avg = p.days ? Math.round(p.total / p.days) : 0;
-  return p;
-};
-
-const reducerInitial = () => ({ days: 0, total: 0, avg: 0 });
-const moveChartFunc = (divRef, ndx) => {
-  console.log(ndx);
-  const dimension = ndx.dimension((d) => d.index);
-
-  const moveChart = dc.lineChart(divRef);
-  const monthlyMoveGroup = dimension
-    .group()
-    .reduceSum((d) => Math.abs(d.close - d.open));
-  const indexAvgByMonthGroup = dimension
-    .group()
-    .reduce(reducerAdd, reducerRemove, reducerInitial);
-
-  moveChart
-    .dimension(dimension)
-    .mouseZoomable(true)
-    .transitionDuration(1000)
-    .x(scaleTime().domain([new Date(1985, 0, 1), new Date(2012, 11, 31)]))
-    .round(timeMonth.round)
-    .xUnits(timeMonths)
-    .elasticY(true)
-    .renderHorizontalGridLines(true)
-    .legend(dc.legend().x(800).y(10).itemHeight(13).gap(5))
-    .brushOn(false)
-    .group(indexAvgByMonthGroup, "Monthly Index Average")
-    .valueAccessor(function (d) {
-      return d.value.avg;
-    })
-    .stack(monthlyMoveGroup, "Monthly Index Move", function (d) {
-      return d.value;
-    })
-    .title(function (d) {
-      var value = d.value.avg ? d.value.avg : d.value;
-      if (isNaN(value)) {
-        value = 0;
-      }
-      return dateFormat(d.key) + "\n" + numberFormat(value);
-    });
-
-  return moveChart;
-};
-
-export const StackedBarChart = (props) => (
-  <ChartTemplate chartFunction={moveChartFunc} title="Monthly Price Moves" />
-);

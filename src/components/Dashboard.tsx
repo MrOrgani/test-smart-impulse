@@ -1,6 +1,6 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { StackedBarChartJS } from "./Charts/StackedBarChartJS";
+import { StackedBarChart } from "./Charts/StackedBarChart";
 
 export const Dashboard = () => {
   return (
@@ -10,9 +10,7 @@ export const Dashboard = () => {
           <CardTitle>Consommation</CardTitle>
         </CardHeader>
         <CardContent className="pl-2">
-          {/* <Overview data={data} /> */}
-          {/* <StackedBarChart /> */}
-          <StackedBarChartJS />
+          <StackedBarChart />
         </CardContent>
       </Card>
     </div>
