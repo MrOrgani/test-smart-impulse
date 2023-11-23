@@ -14,6 +14,7 @@ export const StackedBarChart = () => {
   const { data, isLoading } = useDataContext();
   const {
     temporalAggregation: { selectedTemporalAggregation },
+    measureUnitParams: { measureUnit },
   } = useDataParams();
 
   return (
@@ -67,8 +68,9 @@ export const StackedBarChart = () => {
                       label += ": ";
                     }
                     if (context.parsed.x !== null) {
-                      label +=
-                        context.dataset.tooltip[context.parsed.x] + " MWh";
+                      label += `${
+                        context.dataset.tooltip[context.parsed.x]
+                      } ${measureUnit}`;
                     }
                     return label;
                   },
@@ -103,8 +105,7 @@ export const StackedBarChart = () => {
                 stacked: true,
                 ticks: {
                   callback: function (value, index, values) {
-                    // This function will be called for each tick
-                    return value + " Mwh"; // Replace this with your own logic
+                    return `${value} ${measureUnit}`;
                   },
                 },
               },
