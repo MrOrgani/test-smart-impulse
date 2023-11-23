@@ -28,7 +28,6 @@ export const MeasurementUnitSelector: React.FC<Props> = ({
       onValueChange={(value: MeasureUnit) => setMaesureUnit(value)}
     >
       <SelectTrigger
-        id="temporalAggragtion"
         className={
           "w-auto  m-0 p-0 border-0 rounded-none border-b-2 h-auto mx-2"
         }

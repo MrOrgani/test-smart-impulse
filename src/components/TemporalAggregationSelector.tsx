@@ -26,7 +26,12 @@ export const TemporalAggregationSelector = () => {
         value={selectedTemporalAggregation}
         onValueChange={(value) => setSelectedTemporalAggregation(value as any)}
       >
-        <SelectTrigger id="temporalAggragtion">
+        <SelectTrigger
+          id="temporalAggragtion"
+          className={
+            "w-auto  m-0 p-0 border-0 rounded-none border-b-2 h-auto mx-2"
+          }
+        >
           <SelectValue placeholder="Select" />
         </SelectTrigger>
         <SelectContent>
