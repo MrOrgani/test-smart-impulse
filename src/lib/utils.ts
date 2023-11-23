@@ -24,7 +24,8 @@ export function cn(...inputs: ClassValue[]) {
 
 export const getTimeLabels = (
   data: EnergyConsumptionData,
-  aggregationType: "day" | "week" | "month" | "year"
+  aggregationType: "day" | "week" | "month" | "year",
+  timezone: string
 ) => {
   // Get index values from the longest dataset
   const longestDataset = data.reduce((acc, item) => {
@@ -34,19 +35,24 @@ export const getTimeLabels = (
   // Get the labels from the longest dataset
   const timestamps = longestDataset.data.map(([timestamp]) => timestamp);
 
-  const aggregatedTimestamps = aggregateTimestamps(timestamps, aggregationType);
+  const aggregatedTimestamps = aggregateTimestamps(
+    timestamps,
+    aggregationType,
+    timezone
+  );
 
   return aggregatedTimestamps;
 };
 
 const aggregateTimestamps = (
   timestamps: number[],
-  aggregationType: "day" | "week" | "month" | "year"
+  aggregationType: "day" | "week" | "month" | "year",
+  timezone: string
 ): string[] => {
   const aggregatedTimestamps: string[] = [];
 
   timestamps.forEach((timestamp) => {
-    const date = dayjs(timestamp).tz("Europe/Paris");
+    const date = dayjs(timestamp).tz(timezone);
 
     switch (aggregationType) {
       case "day":
@@ -82,13 +88,14 @@ const aggregateTimestamps = (
 
 const getDataAggregatedByTimeAggregation = (
   data: [number, number][],
-  aggregationType: "day" | "week" | "month" | "year"
+  aggregationType: "day" | "week" | "month" | "year",
+  timezone = "Europe/Paris"
 ) => {
   const temporalFormatMap = new Map<string, number>();
   data.forEach((datum) => {
     if (!datum || !Array.isArray(datum)) return datum;
     const [timestamp, value] = datum;
-    const date = dayjs(timestamp).tz("Europe/Paris");
+    const date = dayjs(timestamp).tz(timezone);
 
     switch (aggregationType) {
       case "day":
@@ -149,14 +156,16 @@ const aggregateDatasets = (
       data: EnergyConsumptionDataElement["data"];
     }
   >,
-  aggregationType: "day" | "week" | "month" | "year"
+  aggregationType: "day" | "week" | "month" | "year",
+  timezone = "Europe/Paris"
 ) => {
   if (!datasets.length) return [];
 
   const aggregatedDatasets = datasets.map((dataset) => {
     const dataAggregatedByTimeAggregation = getDataAggregatedByTimeAggregation(
       dataset.data,
-      aggregationType
+      aggregationType,
+      timezone
     );
     // reduce the aggregated and summ the values
     const reduceDataMap = dataAggregatedByTimeAggregation.reduce(
@@ -203,7 +212,8 @@ const aggregateDatasets = (
 export const formatDatasets = (
   data: EnergyConsumptionData,
   dateRange: DateRange | undefined,
-  aggregationType: "day" | "week" | "month" | "year"
+  aggregationType: "day" | "week" | "month" | "year",
+  timezone = "Europe/Paris"
 ): Array<
   ArrayElement<ChartProps["data"]["datasets"]> & {
     datasetType: EnergyConsumptionDataElement["type"];
@@ -216,7 +226,8 @@ export const formatDatasets = (
   const timeFilteredDatasets = applyDateRangeFilter(basicDatasets, dateRange);
   const aggregatedDatasets = aggregateDatasets(
     timeFilteredDatasets,
-    aggregationType
+    aggregationType,
+    timezone
   );
   const formattedDatasets = applyValueDivider(aggregatedDatasets);
 
