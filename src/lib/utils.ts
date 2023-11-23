@@ -4,6 +4,7 @@ import {
   ArrayElement,
   EnergyConsumptionData,
   EnergyConsumptionDataElement,
+  TemporalAggregations,
 } from "./types";
 import { DateRange } from "react-day-picker";
 import { ChartProps } from "react-chartjs-2";
@@ -24,7 +25,7 @@ export function cn(...inputs: ClassValue[]) {
 
 export const getTimeLabels = (
   data: EnergyConsumptionData,
-  aggregationType: "day" | "week" | "month" | "year",
+  aggregationType: TemporalAggregations,
   timezone: string
 ) => {
   // Get index values from the longest dataset
@@ -43,7 +44,7 @@ export const getTimeLabels = (
 
 const getDataAggregatedByTimeAggregation = (
   data: [number, number][],
-  aggregationType: "day" | "week" | "month" | "year",
+  aggregationType: TemporalAggregations,
   timezone: string
 ) => {
   const temporalFormatMap = new Map<string, number>();
@@ -111,7 +112,7 @@ const aggregateDatasets = (
       data: EnergyConsumptionDataElement["data"];
     }
   >,
-  aggregationType: "day" | "week" | "month" | "year",
+  aggregationType: TemporalAggregations,
   timezone: string
 ) => {
   if (!datasets.length) return [];
@@ -171,7 +172,7 @@ const aggregateDatasets = (
 export const formatDatasets = (
   data: EnergyConsumptionData,
   dateRange: DateRange | undefined,
-  aggregationType: "day" | "week" | "month" | "year",
+  aggregationType: TemporalAggregations,
   timezone: string
 ): Array<
   ArrayElement<ChartProps["data"]["datasets"]> & {
@@ -282,9 +283,18 @@ export const applyDateRangeFilter = (
         ? item
         : [timestamp, 0];
     }) as EnergyConsumptionDataElement["data"];
+    const filteredTooltips = dataset.tooltip?.map((item) => {
+      if (!item || !Array.isArray(item)) return [0, 0];
+      const timestamp = item[0];
+      return startFilterRangeTimestamp <= timestamp &&
+        timestamp <= endFilterRangeTimestamp
+        ? item
+        : [timestamp, 0];
+    }) as EnergyConsumptionDataElement["data"];
     return {
       ...dataset,
       data: filteredData,
+      tooltip: filteredTooltips,
     };
   });
 
