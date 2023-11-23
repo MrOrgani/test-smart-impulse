@@ -17,42 +17,42 @@ const DataContext = React.createContext<{
   //     React.SetStateAction<TemporalAggregations>
   //   >
   // ];
+  isLoading: boolean;
 }>({
   data: null,
   setDateRangeFilter: () => {},
   selectedDateRange: undefined,
   selectableDateRange: undefined,
   // temporalAggregation: ["day", () => {}],
+  isLoading: true,
 });
 
 export const DataContextProvider: React.FC<{
   children: React.ReactElement;
 }> = ({ children }) => {
   const { currentBuilding } = useProjects();
-  const { data: fetchedData } = useEnergyConsumption(currentBuilding?.uuid);
+  const { data: fetchedData, ...restFetchedData } = useEnergyConsumption(
+    currentBuilding?.uuid
+  );
   const {
-    temporalAggregation: [
+    temporalAggregation: {
       selectedTemporalAggregation,
       // setSelectedTemporalAggregation,
-    ],
+    },
     dateRangeFilter,
   } = useDataParams();
 
-  if (!fetchedData?.length || currentBuilding === undefined) {
-    return null;
-  }
-
   const labels = getTimeLabels(
-    fetchedData,
+    fetchedData ?? [],
     selectedTemporalAggregation,
-    currentBuilding?.timezone
+    currentBuilding?.timezone ?? "Europe/Paris"
   );
 
   const formatedDatasets = formatDatasets(
-    fetchedData,
+    fetchedData ?? [],
     dateRangeFilter.selectedDateRange,
     selectedTemporalAggregation,
-    currentBuilding.timezone
+    currentBuilding?.timezone ?? "Europe/Paris"
   );
 
   const selectableDateExtendArray = d3.extent(labels);
@@ -76,6 +76,7 @@ export const DataContextProvider: React.FC<{
         //   selectedTemporalAggregation,
         //   setSelectedTemporalAggregation,
         // ],
+        ...restFetchedData,
       }}
     >
       {children}
@@ -89,6 +90,7 @@ export const useDataContext = () => {
     setDateRangeFilter,
     selectedDateRange,
     selectableDateRange,
+    ...rest
     // temporalAggregation,
   } = React.useContext(DataContext);
   return {
@@ -96,6 +98,7 @@ export const useDataContext = () => {
     setDateRangeFilter,
     selectedDateRange,
     selectableDateRange,
+    ...rest,
     // temporalAggregation,
   };
 };
