@@ -32,64 +32,19 @@ export const getTimeLabels = (
     return item.data.length > acc.data.length ? item : acc;
   }, data[0]);
 
-  // Get the labels from the longest dataset
-  const timestamps = longestDataset.data.map(([timestamp]) => timestamp);
-
-  const aggregatedTimestamps = aggregateTimestamps(
-    timestamps,
+  const aggregatedTimestamps = getDataAggregatedByTimeAggregation(
+    longestDataset.data,
     aggregationType,
     timezone
-  );
+  ).keys();
 
-  return aggregatedTimestamps;
-};
-
-const aggregateTimestamps = (
-  timestamps: number[],
-  aggregationType: "day" | "week" | "month" | "year",
-  timezone: string
-): string[] => {
-  const aggregatedTimestamps: string[] = [];
-
-  timestamps.forEach((timestamp) => {
-    const date = dayjs(timestamp).tz(timezone);
-
-    switch (aggregationType) {
-      case "day":
-        const aggregatedTimestamp = date.format("YYYY-MM-DD");
-        if (!aggregatedTimestamps.includes(aggregatedTimestamp)) {
-          aggregatedTimestamps.push(aggregatedTimestamp);
-        }
-        break;
-      case "week":
-        const startOfWeek = date.startOf("week").toISOString();
-        if (!aggregatedTimestamps.includes(startOfWeek)) {
-          aggregatedTimestamps.push(startOfWeek);
-        }
-        break;
-      case "month":
-        const aggregatedTimestamp3 = date.format("YYYY-MM");
-        if (!aggregatedTimestamps.includes(aggregatedTimestamp3)) {
-          aggregatedTimestamps.push(aggregatedTimestamp3);
-        }
-        break;
-      case "year":
-        const aggregatedTimestamp4 = date.format("YYYY");
-
-        if (!aggregatedTimestamps.includes(aggregatedTimestamp4)) {
-          aggregatedTimestamps.push(aggregatedTimestamp4);
-        }
-        break;
-    }
-  });
-
-  return aggregatedTimestamps;
+  return [...aggregatedTimestamps];
 };
 
 const getDataAggregatedByTimeAggregation = (
   data: [number, number][],
   aggregationType: "day" | "week" | "month" | "year",
-  timezone = "Europe/Paris"
+  timezone: string
 ) => {
   const temporalFormatMap = new Map<string, number>();
   data.forEach((datum) => {
@@ -145,7 +100,7 @@ const getDataAggregatedByTimeAggregation = (
         break;
     }
   });
-  return [...temporalFormatMap.entries()];
+  return temporalFormatMap;
 };
 
 const aggregateDatasets = (
@@ -157,19 +112,20 @@ const aggregateDatasets = (
     }
   >,
   aggregationType: "day" | "week" | "month" | "year",
-  timezone = "Europe/Paris"
+  timezone: string
 ) => {
   if (!datasets.length) return [];
 
   const aggregatedDatasets = datasets.map((dataset) => {
+    // aggregate the data by the aggregation type
     const dataAggregatedByTimeAggregation = getDataAggregatedByTimeAggregation(
       dataset.data,
       aggregationType,
       timezone
-    );
+    ).entries();
     // reduce the aggregated and summ the values
-    const reduceDataMap = dataAggregatedByTimeAggregation.reduce(
-      (acc, item) => {
+    const reduceDataMap = [...dataAggregatedByTimeAggregation]
+      .reduce((acc, item) => {
         if (!item || !Array.isArray(item)) return acc;
         const timestamp = item[0];
         const value = item[1];
@@ -178,15 +134,19 @@ const aggregateDatasets = (
           timestamp,
           acc.has(timestamp) ? acc.get(timestamp) + value : value
         );
-      },
-      new Map()
-    );
+      }, new Map())
+      .entries();
 
+    // aggregate the tooltips by the aggregation type
     const tooltipsAggregatedByTimeAggregation =
-      getDataAggregatedByTimeAggregation(dataset.tooltip, aggregationType);
+      getDataAggregatedByTimeAggregation(
+        dataset.tooltip,
+        aggregationType,
+        timezone
+      ).entries();
 
-    const reduceTooltipMap = tooltipsAggregatedByTimeAggregation.reduce(
-      (acc, item) => {
+    const reduceTooltipMap = [...tooltipsAggregatedByTimeAggregation]
+      .reduce((acc, item) => {
         if (!item || !Array.isArray(item)) return acc;
         const timestamp = item[0];
         const value = item[1];
@@ -195,14 +155,13 @@ const aggregateDatasets = (
           timestamp,
           acc.has(timestamp) ? acc.get(timestamp) + value : value
         );
-      },
-      new Map()
-    );
+      }, new Map())
+      .entries();
 
     return {
       ...dataset,
-      data: [...reduceDataMap.entries()],
-      tooltip: [...reduceTooltipMap.entries()],
+      data: [...reduceDataMap],
+      tooltip: [...reduceTooltipMap],
     };
   });
 
@@ -213,7 +172,7 @@ export const formatDatasets = (
   data: EnergyConsumptionData,
   dateRange: DateRange | undefined,
   aggregationType: "day" | "week" | "month" | "year",
-  timezone = "Europe/Paris"
+  timezone: string
 ): Array<
   ArrayElement<ChartProps["data"]["datasets"]> & {
     datasetType: EnergyConsumptionDataElement["type"];
