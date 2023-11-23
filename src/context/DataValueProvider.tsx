@@ -11,19 +11,12 @@ const DataContext = React.createContext<{
   setDateRangeFilter: (dateRange: DateRange | undefined) => void;
   selectedDateRange: DateRange | undefined;
   selectableDateRange: DateRange | undefined;
-  // temporalAggregation: [
-  //   selectedTemporalAggregation: TemporalAggregations,
-  //   setSelectedTemporalAggregation: React.Dispatch<
-  //     React.SetStateAction<TemporalAggregations>
-  //   >
-  // ];
   isLoading: boolean;
 }>({
   data: null,
   setDateRangeFilter: () => {},
   selectedDateRange: undefined,
   selectableDateRange: undefined,
-  // temporalAggregation: ["day", () => {}],
   isLoading: true,
 });
 
@@ -35,11 +28,8 @@ export const DataContextProvider: React.FC<{
     currentBuilding?.uuid
   );
   const {
-    temporalAggregation: {
-      selectedTemporalAggregation,
-      // setSelectedTemporalAggregation,
-    },
-    dateRangeFilter,
+    temporalAggregation: { selectedTemporalAggregation },
+    dateRangeFilter: { selectedDateRange, setDateRangeFilter },
   } = useDataParams();
 
   const labels = getTimeLabels(
@@ -50,16 +40,19 @@ export const DataContextProvider: React.FC<{
 
   const formatedDatasets = formatDatasets(
     fetchedData ?? [],
-    dateRangeFilter.selectedDateRange,
+    selectedDateRange,
     selectedTemporalAggregation,
     currentBuilding?.timezone ?? "Europe/Paris"
   );
 
   const selectableDateExtendArray = d3.extent(labels);
-  const selectableDateRange = {
-    from: dayjs(selectableDateExtendArray[0]).toDate(),
-    to: dayjs(selectableDateExtendArray[1]).toDate(),
-  };
+  const selectableDateRange =
+    labels.length > 0
+      ? {
+          from: dayjs(selectableDateExtendArray[0]).toDate(),
+          to: dayjs(selectableDateExtendArray[1]).toDate(),
+        }
+      : undefined;
 
   return (
     <DataContext.Provider
@@ -68,14 +61,9 @@ export const DataContextProvider: React.FC<{
           labels,
           datasets: formatedDatasets,
         },
-        selectedDateRange:
-          dateRangeFilter.selectedDateRange || selectableDateRange,
+        selectedDateRange: selectedDateRange || selectableDateRange,
         selectableDateRange,
-        setDateRangeFilter: dateRangeFilter.setDateRangeFilter,
-        // temporalAggregation: [
-        //   selectedTemporalAggregation,
-        //   setSelectedTemporalAggregation,
-        // ],
+        setDateRangeFilter: setDateRangeFilter,
         ...restFetchedData,
       }}
     >
@@ -91,7 +79,6 @@ export const useDataContext = () => {
     selectedDateRange,
     selectableDateRange,
     ...rest
-    // temporalAggregation,
   } = React.useContext(DataContext);
   return {
     data,
@@ -99,6 +86,5 @@ export const useDataContext = () => {
     selectedDateRange,
     selectableDateRange,
     ...rest,
-    // temporalAggregation,
   };
 };

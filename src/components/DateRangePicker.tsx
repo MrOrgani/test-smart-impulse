@@ -12,6 +12,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import dayjs from "dayjs";
+import { Skeleton } from "./ui/skeleton";
 
 type DatePickerProps = {
   className?: string;
@@ -19,6 +20,7 @@ type DatePickerProps = {
   onChange: (date: DateRange | undefined) => void;
   selectedDateRange: DateRange | undefined;
   selectableDateRange: DateRange | undefined;
+  isLoading: boolean;
 };
 
 export const DatePickerWithRange: React.FC<DatePickerProps> = ({
@@ -26,16 +28,13 @@ export const DatePickerWithRange: React.FC<DatePickerProps> = ({
   selectedDateRange,
   onChange,
   selectableDateRange,
+  isLoading,
 }) => {
   const [dateRange, setDateRange] = React.useState<DateRange | undefined>();
   const disabledDays = {
     before: dayjs(selectableDateRange?.from).toDate(),
     after: dayjs(selectableDateRange?.to).toDate(),
   };
-
-  if (!selectableDateRange?.from || !selectableDateRange?.to) {
-    return null;
-  }
 
   return (
     <div className={cn("grid gap-2", className)}>
@@ -49,8 +48,9 @@ export const DatePickerWithRange: React.FC<DatePickerProps> = ({
               !selectedDateRange && "text-muted-foreground"
             )}
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {selectedDateRange?.from ? (
+            <CalendarIcon className="mr-2 h-4 w-10" />
+            {isLoading && <Skeleton className=" w-40 h-4" />}
+            {!isLoading && selectedDateRange?.from ? (
               selectedDateRange.to ? (
                 <>
                   {format(selectedDateRange.from, "LLL dd, y")} -{" "}
@@ -59,9 +59,7 @@ export const DatePickerWithRange: React.FC<DatePickerProps> = ({
               ) : (
                 format(selectedDateRange.from, "LLL dd, y")
               )
-            ) : (
-              "Select date range"
-            )}
+            ) : null}
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0" align="start">
@@ -69,8 +67,8 @@ export const DatePickerWithRange: React.FC<DatePickerProps> = ({
             initialFocus
             mode="range"
             defaultMonth={selectedDateRange?.from}
-            min={selectableDateRange.from.getTime()}
-            max={selectableDateRange.to.getTime()}
+            min={selectableDateRange?.from?.getTime()}
+            max={selectableDateRange?.to?.getTime()}
             selected={dateRange}
             onSelect={(range) => {
               setDateRange(range);

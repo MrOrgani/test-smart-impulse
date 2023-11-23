@@ -13,7 +13,7 @@ export const Dashboard = () => {
           <CardTitle>Consommation</CardTitle>
         </CardHeader>
         <CardContent className="pl-2 ">
-          <div className="flex">
+          <div className="flex gap-2">
             <DateSelector />
             <TemporalAggregationSelector />
             <ResetButton />

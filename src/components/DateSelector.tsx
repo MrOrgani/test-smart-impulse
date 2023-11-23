@@ -7,13 +7,15 @@ export const DateSelector = () => {
   const {
     dateRangeFilter: { selectedDateRange },
   } = useDataParams();
-  const { setDateRangeFilter, selectableDateRange } = useDataContext();
+  const { setDateRangeFilter, selectableDateRange, isLoading } =
+    useDataContext();
 
   return (
     <DatePickerWithRange
       selectableDateRange={selectableDateRange}
       selectedDateRange={selectedDateRange || selectableDateRange}
       onChange={setDateRangeFilter}
+      isLoading={isLoading}
     />
   );
 };
