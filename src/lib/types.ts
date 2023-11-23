@@ -50,3 +50,5 @@ export type IBuilding = {
   timezone: string;
   uuid: string;
 };
+
+export type TemporalAggregations = "day" | "week" | "month" | "year";
