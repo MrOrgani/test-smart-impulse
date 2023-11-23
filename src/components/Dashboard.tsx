@@ -4,13 +4,16 @@ import { StackedBarChart } from "./Charts/StackedBarChart";
 import { DateSelector } from "./DateSelector";
 import { TemporalAggregationSelector } from "./TemporalAggregationSelector";
 import { ResetButton } from "./ResetButton";
+import { MeasurementUnitSelector } from "./MeasurementUnitSelector";
 
 export const Dashboard = () => {
   return (
     <div>
       <Card className="col-span-4">
         <CardHeader>
-          <CardTitle>Consommation</CardTitle>
+          <CardTitle className="flex  items-baseline">
+            Consumption in <MeasurementUnitSelector />
+          </CardTitle>
         </CardHeader>
         <CardContent className="pl-2 ">
           <div className="flex gap-2">

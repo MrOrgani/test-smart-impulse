@@ -58,3 +58,8 @@ export type IBuiding = {
   name: string;
   timezone: string;
 };
+
+type MeasureUnit = "MWh" | "kWh" | "euros";
+export type MeasureUnitLabels = {
+  [key in MeasureUnit]: string;
+};

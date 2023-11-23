@@ -1,5 +1,5 @@
 import { useProjects } from "@/lib/react-query/queries";
-import { TemporalAggregations } from "@/lib/types";
+import { MeasureUnitLabels, TemporalAggregations } from "@/lib/types";
 import React from "react";
 import { useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
@@ -14,6 +14,8 @@ export const DataParamsProvider: React.FC<{
   >(undefined);
   const [selectedTemporalAggregation, setSelectedTemporalAggregation] =
     useState<TemporalAggregations>("day");
+  const [measureUnit, setMaesureUnit] =
+    useState<keyof MeasureUnitLabels>("MWh");
 
   const { currentBuilding } = useProjects();
 
@@ -35,6 +37,7 @@ export const DataParamsProvider: React.FC<{
         },
         dateRangeFilter: { selectedDateRange, setDateRangeFilter },
         handleDateRangeSelection,
+        measureUnitParams: { measureUnit, setMaesureUnit },
       }}
     >
       {children}
@@ -43,11 +46,16 @@ export const DataParamsProvider: React.FC<{
 };
 
 export const useDataParams = () => {
-  const { temporalAggregation, dateRangeFilter, handleDateRangeSelection } =
-    React.useContext(DataParamsContext);
+  const {
+    temporalAggregation,
+    dateRangeFilter,
+    handleDateRangeSelection,
+    measureUnitParams,
+  } = React.useContext(DataParamsContext);
   return {
     temporalAggregation,
     dateRangeFilter,
     handleDateRangeSelection,
+    measureUnitParams,
   };
 };
