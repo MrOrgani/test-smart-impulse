@@ -54,10 +54,6 @@ export const DataParamsProvider: React.FC<{
     setDateRangeFilter(undefined);
   }, [currentBuilding?.uuid]);
 
-  const handleDateRangeSelection = (dateRange: DateRange | undefined): void => {
-    setDateRangeFilter(dateRange);
-  };
-
   return (
     <DataParamsContext.Provider
       value={{
@@ -66,7 +62,8 @@ export const DataParamsProvider: React.FC<{
           setSelectedTemporalAggregation,
         },
         dateRangeFilter: { selectedDateRange, setDateRangeFilter },
-        handleDateRangeSelection,
+        handleDateRangeSelection: (dateRange: DateRange | undefined) =>
+          setDateRangeFilter(dateRange),
         measureUnitParams: { measureUnit, setMaesureUnit },
       }}
     >
