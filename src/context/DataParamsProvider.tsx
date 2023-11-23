@@ -29,10 +29,10 @@ export const DataParamsProvider: React.FC<{
   return (
     <DataParamsContext.Provider
       value={{
-        temporalAggregation: [
+        temporalAggregation: {
           selectedTemporalAggregation,
           setSelectedTemporalAggregation,
-        ] as const,
+        },
         dateRangeFilter: { selectedDateRange, setDateRangeFilter },
         handleDateRangeSelection,
       }}

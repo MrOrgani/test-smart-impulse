@@ -11,10 +11,10 @@ import { useDataParams } from "@/context/DataParamsProvider";
 
 export const TemporalAggregationSelector = () => {
   const {
-    temporalAggregation: [
+    temporalAggregation: {
       selectedTemporalAggregation,
       setSelectedTemporalAggregation,
-    ],
+    },
   } = useDataParams();
   return (
     <div className="flex items-center">
