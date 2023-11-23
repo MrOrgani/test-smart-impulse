@@ -10,8 +10,6 @@ function App() {
   const { buildings } = useProjects();
   const location = useLocation();
 
-  console.log("App", buildings);
-
   return (
     <div
       className={
