@@ -1,11 +1,9 @@
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
-import { Dashboard } from "./components/Dashboard";
-import { QueryProvider } from "./lib/react-query/QueryProvider";
+
+import { Root } from "./Root";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -13,15 +11,7 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <QueryProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<App />}>
-            <Route path=":uuid" element={<Dashboard />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-    </QueryProvider>
+    <Root />
   </React.StrictMode>
 );
 
