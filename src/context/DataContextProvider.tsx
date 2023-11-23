@@ -1,10 +1,9 @@
-import { useEnergyConsumption } from "@/hooks/useEnergyData";
 import React, { useEffect, useState } from "react";
 import { formatDatasets, getTimeLabels } from "@/lib/utils";
 import { DateRange } from "react-day-picker";
-import { useProjects } from "@/hooks/useProjects";
 import * as d3 from "d3";
 import dayjs from "dayjs";
+import { useEnergyConsumption, useProjects } from "@/lib/react-query/queries";
 
 const DataContext = React.createContext<{
   data: any | null;
@@ -32,7 +31,7 @@ export const DataContextProvider: React.FC<{
   children: React.ReactElement;
 }> = ({ children }) => {
   const { currentBuilding } = useProjects();
-  const fetchedData = useEnergyConsumption(currentBuilding?.uuid);
+  const { data: fetchedData } = useEnergyConsumption(currentBuilding?.uuid);
 
   const [selecteDdateRange, setDateRangeFilter] = useState<
     DateRange | undefined

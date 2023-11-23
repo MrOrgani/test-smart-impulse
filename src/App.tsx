@@ -3,11 +3,11 @@ import React from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { Header } from "./components/Header";
 import { Sidebar } from "./components/Sidebar";
-import { useProjects } from "./hooks/useProjects";
 import { DataContextProvider } from "./context/DataContextProvider";
+import { useProjects } from "./lib/react-query/queries";
 
 function App() {
-  const { buildings } = useProjects();
+  const { data: buildings } = useProjects();
   const location = useLocation();
 
   return (
@@ -21,7 +21,7 @@ function App() {
         <div className="border-t">
           <div className="">
             <div className="grid lg:grid-cols-5">
-              <Sidebar buildings={buildings} />
+              <Sidebar buildings={buildings ?? []} />
               <div className="col-span-3 lg:col-span-4 lg:border-l">
                 <div className="h-full px-4 py-6 lg:px-8">
                   {location.pathname === "/" ? (

@@ -2,11 +2,11 @@ import { useDataContext } from "@/context/DataContextProvider";
 import { Chart as ChartJS, registerables } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import zoomPlugin from "chartjs-plugin-zoom";
-import { useProjects } from "@/hooks/useProjects";
 import * as dayjs from "dayjs";
 import { DatePickerWithRange } from "../DateRangePicker";
 import { ResetButton } from "../ResetButton";
 import { TemporalAggregationSelector } from "../TemporalAggregationSelector";
+import { useProjects } from "@/lib/react-query/queries";
 
 ChartJS.register(...registerables, zoomPlugin);
 
