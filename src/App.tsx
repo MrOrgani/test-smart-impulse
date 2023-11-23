@@ -8,7 +8,7 @@ import { useProjects } from "./lib/react-query/queries";
 import { DataParamsProvider } from "./context/DataParamsProvider";
 
 function App() {
-  const { data: buildings } = useProjects();
+  const { data: buildings, isLoading } = useProjects();
   const location = useLocation();
 
   return (
@@ -17,12 +17,12 @@ function App() {
         "container flex items-center justify-center mx-auto my-auto h-screen"
       }
     >
-      <div className={"bg-bg-300 rounded-md"}>
+      <div className={"bg-white rounded-md"}>
         <Header />
         <div className="border-t">
           <div className="">
-            <div className="grid lg:grid-cols-5">
-              <Sidebar buildings={buildings ?? []} />
+            <div className="flex">
+              <Sidebar buildings={buildings ?? []} isLoading={isLoading} />
               <div className="col-span-3 lg:col-span-4 lg:border-l">
                 <div className="h-full px-4 py-6 lg:px-8">
                   {location.pathname === "/" ? (
