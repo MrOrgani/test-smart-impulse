@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "./ui/button";
-import { useDataContext } from "@/context/DataContextProvider";
+import { useDataContext } from "@/context/DataValueProvider";
 
 export const ResetButton = () => {
   const { setDateRangeFilter } = useDataContext();

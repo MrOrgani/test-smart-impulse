@@ -4,29 +4,25 @@ import { DateRange } from "react-day-picker";
 import * as d3 from "d3";
 import dayjs from "dayjs";
 import { useEnergyConsumption, useProjects } from "@/lib/react-query/queries";
-import { useDataParams } from "@/hooks/useDataParams";
-import { TemporalAggregations } from "@/lib/types";
+import { useDataParams } from "@/context/DataParamsProvider";
 
 const DataContext = React.createContext<{
   data: any | null;
   setDateRangeFilter: (dateRange: DateRange | undefined) => void;
   selectedDateRange: DateRange | undefined;
   selectableDateRange: DateRange | undefined;
-  temporalAggregation: {
-    selectedTemporalAggregation: TemporalAggregations;
-    setSelectedTemporalAggregation: React.Dispatch<
-      React.SetStateAction<TemporalAggregations>
-    >;
-  };
+  // temporalAggregation: [
+  //   selectedTemporalAggregation: TemporalAggregations,
+  //   setSelectedTemporalAggregation: React.Dispatch<
+  //     React.SetStateAction<TemporalAggregations>
+  //   >
+  // ];
 }>({
   data: null,
   setDateRangeFilter: () => {},
   selectedDateRange: undefined,
   selectableDateRange: undefined,
-  temporalAggregation: {
-    selectedTemporalAggregation: "day",
-    setSelectedTemporalAggregation: () => {},
-  },
+  // temporalAggregation: ["day", () => {}],
 });
 
 export const DataContextProvider: React.FC<{
@@ -34,7 +30,13 @@ export const DataContextProvider: React.FC<{
 }> = ({ children }) => {
   const { currentBuilding } = useProjects();
   const { data: fetchedData } = useEnergyConsumption(currentBuilding?.uuid);
-  const { temporalAggregation, dateRangeFilter } = useDataParams();
+  const {
+    temporalAggregation: [
+      selectedTemporalAggregation,
+      // setSelectedTemporalAggregation,
+    ],
+    dateRangeFilter,
+  } = useDataParams();
 
   if (!fetchedData?.length || currentBuilding === undefined) {
     return null;
@@ -42,14 +44,14 @@ export const DataContextProvider: React.FC<{
 
   const labels = getTimeLabels(
     fetchedData,
-    temporalAggregation.selectedTemporalAggregation,
+    selectedTemporalAggregation,
     currentBuilding?.timezone
   );
 
   const formatedDatasets = formatDatasets(
     fetchedData,
     dateRangeFilter.selectedDateRange,
-    temporalAggregation.selectedTemporalAggregation,
+    selectedTemporalAggregation,
     currentBuilding.timezone
   );
 
@@ -70,7 +72,10 @@ export const DataContextProvider: React.FC<{
           dateRangeFilter.selectedDateRange || selectableDateRange,
         selectableDateRange,
         setDateRangeFilter: dateRangeFilter.setDateRangeFilter,
-        temporalAggregation,
+        // temporalAggregation: [
+        //   selectedTemporalAggregation,
+        //   setSelectedTemporalAggregation,
+        // ],
       }}
     >
       {children}
@@ -84,13 +89,13 @@ export const useDataContext = () => {
     setDateRangeFilter,
     selectedDateRange,
     selectableDateRange,
-    temporalAggregation,
+    // temporalAggregation,
   } = React.useContext(DataContext);
   return {
     data,
     setDateRangeFilter,
     selectedDateRange,
     selectableDateRange,
-    temporalAggregation,
+    // temporalAggregation,
   };
 };

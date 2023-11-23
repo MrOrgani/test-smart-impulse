@@ -1,9 +1,14 @@
 import { useProjects } from "@/lib/react-query/queries";
 import { TemporalAggregations } from "@/lib/types";
+import React from "react";
 import { useEffect, useState } from "react";
 import { DateRange } from "react-day-picker";
 
-export const useDataParams = () => {
+const DataParamsContext = React.createContext<any>({});
+
+export const DataParamsProvider: React.FC<{
+  children: React.ReactElement;
+}> = ({ children }) => {
   const [selectedDateRange, setDateRangeFilter] = useState<
     DateRange | undefined
   >(undefined);
@@ -21,12 +26,28 @@ export const useDataParams = () => {
     setDateRangeFilter(dateRange);
   };
 
+  return (
+    <DataParamsContext.Provider
+      value={{
+        temporalAggregation: [
+          selectedTemporalAggregation,
+          setSelectedTemporalAggregation,
+        ] as const,
+        dateRangeFilter: { selectedDateRange, setDateRangeFilter },
+        handleDateRangeSelection,
+      }}
+    >
+      {children}
+    </DataParamsContext.Provider>
+  );
+};
+
+export const useDataParams = () => {
+  const { temporalAggregation, dateRangeFilter, handleDateRangeSelection } =
+    React.useContext(DataParamsContext);
   return {
-    temporalAggregation: {
-      selectedTemporalAggregation,
-      setSelectedTemporalAggregation,
-    },
-    dateRangeFilter: { selectedDateRange, setDateRangeFilter },
+    temporalAggregation,
+    dateRangeFilter,
     handleDateRangeSelection,
   };
 };

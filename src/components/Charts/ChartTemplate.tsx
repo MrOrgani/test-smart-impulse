@@ -3,7 +3,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import * as dc from "dc";
 import { format, timeFormat, timeParse } from "d3";
-import { useDataContext } from "@/context/DataContextProvider";
+import { useDataContext } from "@/context/DataValueProvider";
 
 export const dateFormatSpecifier = "%m/%d/%Y";
 export const dateFormat = timeFormat(dateFormatSpecifier);

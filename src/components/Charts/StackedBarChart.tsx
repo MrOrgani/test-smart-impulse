@@ -1,4 +1,4 @@
-import { useDataContext } from "@/context/DataContextProvider";
+import { useDataContext } from "@/context/DataValueProvider";
 import { Chart as ChartJS, registerables } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import zoomPlugin from "chartjs-plugin-zoom";
@@ -7,18 +7,17 @@ import { DatePickerWithRange } from "../DateRangePicker";
 import { ResetButton } from "../ResetButton";
 import { TemporalAggregationSelector } from "../TemporalAggregationSelector";
 import { useProjects } from "@/lib/react-query/queries";
+import { useDataParams } from "@/context/DataParamsProvider";
 
 ChartJS.register(...registerables, zoomPlugin);
 
 export const StackedBarChart = () => {
   const { currentBuilding } = useProjects();
+  const { data, setDateRangeFilter, selectedDateRange, selectableDateRange } =
+    useDataContext();
   const {
-    data,
-    setDateRangeFilter,
-    selectedDateRange,
-    selectableDateRange,
-    temporalAggregation: { selectedTemporalAggregation },
-  } = useDataContext();
+    temporalAggregation: [selectedTemporalAggregation],
+  } = useDataParams();
 
   if (!data?.labels?.length) {
     return null;
@@ -69,7 +68,6 @@ export const StackedBarChart = () => {
                     case "day":
                       return date.format("DD/MM/YYYY");
                     case "week":
-                      console.log(date, date.week());
                       return `w${date.week()} / ${date.format("YYYY")}`;
                     case "month":
                       return date.format("MM/YYYY");
@@ -105,7 +103,6 @@ export const StackedBarChart = () => {
                     case "day":
                       return date.format("DD/MM/YYYY");
                     case "week":
-                      console.log(date, date.week());
                       return `w${date.week()} / ${date.format("YYYY")}`;
                     case "month":
                       return date.format("MM/YYYY");
