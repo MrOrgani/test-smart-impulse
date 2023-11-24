@@ -3,10 +3,11 @@ import { Chart as ChartJS, registerables } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import zoomPlugin from "chartjs-plugin-zoom";
 import { useProjects } from "@/lib/react-query/queries";
-import { Skeleton } from "../ui/skeleton";
+import { Skeleton } from "../../ui/skeleton";
 import { useTemporalAggregation } from "@/hooks/useTemporalAggregation";
 import { useMeasureUnit } from "@/hooks/useMeasureUnit";
-import { formatDate } from "@/lib/utils";
+import { formatDate, getValueModifier } from "@/lib/utils";
+import { stackedBarChartFormatter } from "./utils";
 
 ChartJS.register(...registerables, zoomPlugin);
 
@@ -17,12 +18,22 @@ export const StackedBarChart = () => {
   const [selectedTemporalAggregation] = useTemporalAggregation();
   const [measureUnit] = useMeasureUnit();
 
+  const valueModifier = getValueModifier(measureUnit);
+  const formattedDatasets = stackedBarChartFormatter(
+    data.datasets,
+    valueModifier
+  );
+
   return (
     <div>
       {isLoading || data.labels.length === 0 ? (
         <Skeleton className="w-full h-[360px] mt-2" />
       ) : (
         <Chart
+          data={{
+            datasets: formattedDatasets,
+            labels: data.labels,
+          }}
           className="mt-2"
           type="bar"
           options={{
@@ -93,7 +104,6 @@ export const StackedBarChart = () => {
               },
             },
           }}
-          data={data}
         />
       )}
     </div>
