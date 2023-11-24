@@ -1,3 +1,5 @@
+import { ChartProps } from "react-chartjs-2";
+
 type EnergyConsumptionStackedLabel =
   | "Informatique et onduleurs"
   | "Moteurs triphasés sur variateurs"
@@ -20,30 +22,30 @@ type EnergyConsumptionElementLabel =
   | "Éclairage sur ballast électronique"
   | "Lampes fluocompactes";
 
-export type EnergyConsumptionData = Array<
-  {
-    color: string;
-    data: Array<[EpochTimeStamp, number]>;
-  } & (
-    | {
-        label: EnergyConsumptionStackedLabel;
-        type: "stacked";
-      }
-    | {
-        label: EnergyConsumptionElementLabel;
-        type: "element";
-      }
-    | {
-        label: "Energie totale";
-        type: "total";
-      }
-  )
->;
+type FetchedDataSet = {
+  color: string;
+  data: Array<[EpochTimeStamp, number]>;
+} & (
+  | {
+      label: EnergyConsumptionStackedLabel;
+      type: "stacked";
+    }
+  | {
+      label: EnergyConsumptionElementLabel;
+      type: "element";
+    }
+  | {
+      label: "Energie totale";
+      type: "total";
+    }
+);
+
+export type EnergyConsumptionDatasets = Array<FetchedDataSet>;
 
 export type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
 
-export type EnergyConsumptionDataElement = ArrayElement<EnergyConsumptionData>;
+export type EnergyConsumptionDataset = ArrayElement<EnergyConsumptionDatasets>;
 
 export type IBuilding = {
   name: string;
@@ -63,3 +65,10 @@ export type MeasureUnit = "MWh" | "kWh" | "euros";
 export type MeasureUnitLabels = {
   [key in MeasureUnit]: string;
 };
+
+export type BasicFormattedDataset = Array<{
+  datasetType: EnergyConsumptionDataset["type"];
+  data: EnergyConsumptionDataset["data"];
+  tooltip: EnergyConsumptionDataset["data"];
+  label: EnergyConsumptionDataset["label"];
+}>;
