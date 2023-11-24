@@ -6,8 +6,8 @@ import {
   SelectContent,
   SelectItem,
 } from "./ui/select";
-import { useDataParams } from "@/context/DataParamsProvider";
 import { MeasureUnit } from "@/lib/types";
+import { useMeasureUnit } from "@/hooks/useMeasureUnit";
 
 const measurementUnitOptions = { MWh: "MWh", kWh: "kWh", euros: "€" };
 
@@ -18,9 +18,8 @@ interface Props {
 export const MeasurementUnitSelector: React.FC<Props> = ({
   options = Object.entries(measurementUnitOptions),
 }) => {
-  const {
-    measureUnitParams: { measureUnit, setMeasureUnit },
-  } = useDataParams();
+  const [measureUnit, setMeasureUnit] = useMeasureUnit();
+
   return (
     <Select
       defaultValue={measureUnit}

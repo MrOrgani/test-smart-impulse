@@ -7,15 +7,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
-import { useDataParams } from "@/context/DataParamsProvider";
+import { useTemporalAggregation } from "@/hooks/useTemporalAggregation";
 
 export const TemporalAggregationSelector = () => {
-  const {
-    temporalAggregation: {
-      selectedTemporalAggregation,
-      setSelectedTemporalAggregation,
-    },
-  } = useDataParams();
+  const [selectedTemporalAggregation, setSelectedTemporalAggregation] =
+    useTemporalAggregation();
   return (
     <div className="flex items-center">
       <Label htmlFor="temporalAggragtion" className="font-normal w-60">

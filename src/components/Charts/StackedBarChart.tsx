@@ -4,18 +4,18 @@ import { Chart } from "react-chartjs-2";
 import zoomPlugin from "chartjs-plugin-zoom";
 import * as dayjs from "dayjs";
 import { useProjects } from "@/lib/react-query/queries";
-import { useDataParams } from "@/context/DataParamsProvider";
 import { Skeleton } from "../ui/skeleton";
+import { useTemporalAggregation } from "@/hooks/useTemporalAggregation";
+import { useMeasureUnit } from "@/hooks/useMeasureUnit";
 
 ChartJS.register(...registerables, zoomPlugin);
 
 export const StackedBarChart = () => {
   const { currentBuilding } = useProjects();
   const { data, isLoading } = useDataContext();
-  const {
-    temporalAggregation: { selectedTemporalAggregation },
-    measureUnitParams: { measureUnit },
-  } = useDataParams();
+
+  const [selectedTemporalAggregation] = useTemporalAggregation();
+  const [measureUnit] = useMeasureUnit();
 
   return (
     <div>
@@ -90,7 +90,7 @@ export const StackedBarChart = () => {
 
                     switch (selectedTemporalAggregation) {
                       case "day":
-                        return date.format("DD/MM/YYYY");
+                        return date.toISOString();
                       case "week":
                         return `w${date.week()} / ${date.format("YYYY")}`;
                       case "month":
