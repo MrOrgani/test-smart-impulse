@@ -4,6 +4,7 @@ import { ScrollArea } from "./ui/scroll-area";
 import { Link, useLocation } from "react-router-dom";
 import { IBuiding } from "@/lib/types";
 import { Skeleton } from "./ui/skeleton";
+import { useSimilarDateRange } from "@/hooks/useSimilarDateRange";
 
 const ButtonSkeleton = () => (
   <Skeleton className="flex items-center w-auto animate-pulse">
@@ -20,6 +21,13 @@ export const Sidebar: React.FC<{
 }> = ({ buildings, isLoading }) => {
   const location = useLocation();
 
+  const [similarDateRange] = useSimilarDateRange();
+
+  const params = new URLSearchParams(location.search);
+  if (similarDateRange === "false") {
+    params.delete("dateRange");
+  }
+
   return (
     <div className="space-y-4 py-4">
       <div className="py-2">
@@ -35,7 +43,10 @@ export const Sidebar: React.FC<{
                 const currentBuilding =
                   location.pathname === "/" + building.uuid;
                 return (
-                  <Link to={"/" + building.uuid} key={`${building.uuid}`}>
+                  <Link
+                    to={`${building.uuid}?${params.toString()}`}
+                    key={`${building.uuid}`}
+                  >
                     <Button
                       variant={currentBuilding ? "default" : "ghost"}
                       className="w-full justify-start font-normal"
