@@ -353,7 +353,7 @@ const applyValueDivider = (
 };
 
 export const formatDate = (
-  date: Date | undefined,
+  date: Date | string | undefined,
   selectedTemporalAggregation: TemporalAggregations,
   timezone: string = "Europe/Paris"
 ) => {

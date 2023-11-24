@@ -2,11 +2,11 @@ import { useDataContext } from "@/context/DataValueProvider";
 import { Chart as ChartJS, registerables } from "chart.js";
 import { Chart } from "react-chartjs-2";
 import zoomPlugin from "chartjs-plugin-zoom";
-import * as dayjs from "dayjs";
 import { useProjects } from "@/lib/react-query/queries";
 import { Skeleton } from "../ui/skeleton";
 import { useTemporalAggregation } from "@/hooks/useTemporalAggregation";
 import { useMeasureUnit } from "@/hooks/useMeasureUnit";
+import { formatDate } from "@/lib/utils";
 
 ChartJS.register(...registerables, zoomPlugin);
 
@@ -43,24 +43,16 @@ export const StackedBarChart = () => {
               },
               title: {
                 display: true,
-                text: `Consommation ${currentBuilding?.name}`,
+                text: `Energy consumption for ${currentBuilding?.name}`,
               },
               tooltip: {
                 callbacks: {
                   title: function (context) {
-                    const date = dayjs(context[0].label).tz(
+                    return formatDate(
+                      context[0].label,
+                      selectedTemporalAggregation,
                       currentBuilding?.timezone
                     );
-                    switch (selectedTemporalAggregation) {
-                      case "day":
-                        return date.format("DD/MM/YYYY");
-                      case "week":
-                        return `w${date.week()} / ${date.format("YYYY")}`;
-                      case "month":
-                        return date.format("MM/YYYY");
-                      case "year":
-                        return date.format("YYYY");
-                    }
                   },
                   label: function (context) {
                     let label = context.dataset.label || "";
@@ -82,22 +74,12 @@ export const StackedBarChart = () => {
               x: {
                 stacked: true,
                 ticks: {
-                  // Include a dollar sign in the ticks
                   callback: function (value, index, ticks) {
-                    const date = dayjs(data?.labels?.[value]).tz(
+                    return formatDate(
+                      data?.labels?.[value],
+                      selectedTemporalAggregation,
                       currentBuilding?.timezone
                     );
-
-                    switch (selectedTemporalAggregation) {
-                      case "day":
-                        return date.toISOString();
-                      case "week":
-                        return `w${date.week()} / ${date.format("YYYY")}`;
-                      case "month":
-                        return date.format("MM/YYYY");
-                      case "year":
-                        return date.format("YYYY");
-                    }
                   },
                 },
               },
