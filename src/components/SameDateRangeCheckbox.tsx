@@ -12,7 +12,6 @@ export const SameDateRangeCheckbox = () => {
         defaultChecked={false}
         checked={similarDateRange === "true"}
         onCheckedChange={(checked) => {
-          console.log("checked", checked);
           setSimilarDateRange(checked);
         }}
       />

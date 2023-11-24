@@ -6,7 +6,6 @@ export const useSimilarDateRange = () => {
 
   const similarDateRange = params.get("similarDateRange");
   const setSimilarDateRange = (value: boolean | string) => {
-    console.log("value", value);
     const searchAsObject: { [key: string]: string } = Object.fromEntries(
       new URLSearchParams(params)
     );
