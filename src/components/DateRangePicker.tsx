@@ -1,9 +1,8 @@
 import * as React from "react";
-import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { DateRange } from "react-day-picker";
 
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -13,6 +12,7 @@ import {
 } from "@/components/ui/popover";
 import dayjs from "dayjs";
 import { Skeleton } from "./ui/skeleton";
+import { TemporalAggregations } from "@/lib/types";
 
 type DatePickerProps = {
   className?: string;
@@ -21,6 +21,8 @@ type DatePickerProps = {
   selectedDateRange: DateRange | undefined;
   selectableDateRange: DateRange | undefined;
   isLoading: boolean;
+  temporalAggregation: TemporalAggregations;
+  timezone: string | undefined;
 };
 
 export const DatePickerWithRange: React.FC<DatePickerProps> = ({
@@ -29,6 +31,8 @@ export const DatePickerWithRange: React.FC<DatePickerProps> = ({
   onChange,
   selectableDateRange,
   isLoading,
+  temporalAggregation,
+  timezone,
 }) => {
   const [dateRange, setDateRange] = React.useState<DateRange | undefined>(
     selectedDateRange
@@ -57,15 +61,11 @@ export const DatePickerWithRange: React.FC<DatePickerProps> = ({
           >
             <CalendarIcon className="mr-2 h-4 w-10" />
             {isLoading && <Skeleton className=" w-40 h-4" />}
-            {!isLoading && selectedDateRange?.from ? (
-              selectedDateRange.to ? (
-                <>
-                  {format(selectedDateRange.from, "LLL dd, y")} -{" "}
-                  {format(selectedDateRange.to, "LLL dd, y")}
-                </>
-              ) : (
-                format(selectedDateRange.from, "LLL dd, y")
-              )
+            {!isLoading && selectedDateRange?.from && selectedDateRange.to ? (
+              <>
+                {formatDate(dateRange?.from, temporalAggregation, timezone)}-{" "}
+                {formatDate(dateRange?.to, temporalAggregation, timezone)}
+              </>
             ) : null}
           </Button>
         </PopoverTrigger>

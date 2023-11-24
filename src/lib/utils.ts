@@ -351,3 +351,22 @@ const applyValueDivider = (
 
   return formattedDatasets;
 };
+
+export const formatDate = (
+  date: Date | undefined,
+  selectedTemporalAggregation: TemporalAggregations,
+  timezone: string = "Europe/Paris"
+) => {
+  if (!date) return "";
+  const localDate = dayjs(date).tz(timezone);
+  switch (selectedTemporalAggregation) {
+    case "day":
+      return localDate.format("DD/MM/YYYY");
+    case "week":
+      return `w${localDate.week()} / ${localDate.format("YYYY")}`;
+    case "month":
+      return localDate.format("MM/YYYY");
+    case "year":
+      return localDate.format("YYYY");
+  }
+};
