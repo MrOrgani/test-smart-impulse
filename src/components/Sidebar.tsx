@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 import { IBuiding } from "@/lib/types";
 import { Skeleton } from "./ui/skeleton";
 import { useSimilarDateRange } from "@/hooks/useSimilarDateRange";
+import { SameDateRangeCheckbox } from "./SameDateRangeCheckbox";
 
 const ButtonSkeleton = () => (
   <Skeleton className="flex items-center w-auto animate-pulse">
@@ -58,6 +59,7 @@ export const Sidebar: React.FC<{
                 );
               })}
           </div>
+          <SameDateRangeCheckbox />
         </ScrollArea>
       </div>
     </div>
