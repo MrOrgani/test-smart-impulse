@@ -57,15 +57,13 @@ const getDataAggregatedByTimeAggregation = (
 
     switch (aggregationType) {
       case "day":
-        const aggregatedTimestamp = date.format("YYYY-MM-DD");
-
-        if (temporalFormatMap.get(aggregatedTimestamp)) {
+        if (temporalFormatMap.get(date.toISOString())) {
           temporalFormatMap.set(
-            aggregatedTimestamp,
-            temporalFormatMap.get(aggregatedTimestamp)! + value
+            date.toISOString(),
+            temporalFormatMap.get(date.toISOString())! + value
           );
         } else {
-          temporalFormatMap.set(aggregatedTimestamp, value);
+          temporalFormatMap.set(date.toISOString(), value);
         }
         break;
       case "week":
