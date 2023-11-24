@@ -4,34 +4,30 @@ import { DateRange } from "react-day-picker";
 import * as d3 from "d3";
 import dayjs from "dayjs";
 import { useEnergyConsumption, useProjects } from "@/lib/react-query/queries";
-import { useDataParams } from "@/context/DataParamsProvider";
+import { useTemporalAggregation } from "@/hooks/useTemporalAggregation";
+import { useMeasureUnit } from "@/hooks/useMeasureUnit";
+import { useDateRange } from "@/hooks/useDateRange";
 
 const DataContext = React.createContext<{
   data: any | null;
-  setDateRangeFilter: (dateRange: DateRange | undefined) => void;
-  selectedDateRange: DateRange | undefined;
   selectableDateRange: DateRange | undefined;
   isLoading: boolean;
 }>({
   data: null,
-  setDateRangeFilter: () => {},
-  selectedDateRange: undefined,
   selectableDateRange: undefined,
   isLoading: true,
 });
 
-export const DataContextProvider: React.FC<{
+export const DataValueProvider: React.FC<{
   children: React.ReactElement;
 }> = ({ children }) => {
   const { currentBuilding } = useProjects();
   const { data: fetchedData, ...restFetchedData } = useEnergyConsumption(
     currentBuilding?.uuid
   );
-  const {
-    temporalAggregation: { selectedTemporalAggregation },
-    dateRangeFilter: { selectedDateRange, setDateRangeFilter },
-    measureUnitParams: { measureUnit },
-  } = useDataParams();
+  const [selectedTemporalAggregation] = useTemporalAggregation();
+  const [measureUnit] = useMeasureUnit();
+  const [selectedDateRange] = useDateRange();
 
   const labels = getTimeLabels(
     fetchedData ?? [],
@@ -63,9 +59,7 @@ export const DataContextProvider: React.FC<{
           labels,
           datasets: formatedDatasets,
         },
-        selectedDateRange: selectedDateRange || selectableDateRange,
         selectableDateRange,
-        setDateRangeFilter: setDateRangeFilter,
         ...restFetchedData,
       }}
     >
@@ -75,17 +69,9 @@ export const DataContextProvider: React.FC<{
 };
 
 export const useDataContext = () => {
-  const {
-    data,
-    setDateRangeFilter,
-    selectedDateRange,
-    selectableDateRange,
-    ...rest
-  } = React.useContext(DataContext);
+  const { data, selectableDateRange, ...rest } = React.useContext(DataContext);
   return {
     data,
-    setDateRangeFilter,
-    selectedDateRange,
     selectableDateRange,
     ...rest,
   };
