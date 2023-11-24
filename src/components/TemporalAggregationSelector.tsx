@@ -15,7 +15,7 @@ export const TemporalAggregationSelector = () => {
   return (
     <div className="flex items-center ml-auto">
       <Label htmlFor="temporalAggragtion" className="font-normal ml-auto">
-        <span>Aggregated By</span>
+        <span>aggregated by</span>
       </Label>
       <Select
         defaultValue={selectedTemporalAggregation}

@@ -48,44 +48,44 @@ export const DatePickerWithRange: React.FC<DatePickerProps> = ({
   };
 
   return (
-    <div className={cn("grid gap-2", className)}>
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            id="date"
-            variant={"outline"}
-            className={cn(
-              "w-[300px] justify-start text-left font-normal",
-              !selectedDateRange && "text-muted-foreground"
-            )}
-          >
-            <CalendarIcon className="mr-2 h-4 w-10" />
-            {isLoading && <Skeleton className=" w-40 h-4" />}
-            {!isLoading && selectedDateRange?.from && selectedDateRange.to ? (
-              <>
-                {formatDate(dateRange?.from, temporalAggregation, timezone)}-{" "}
-                {formatDate(dateRange?.to, temporalAggregation, timezone)}
-              </>
-            ) : null}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            initialFocus
-            mode="range"
-            defaultMonth={selectedDateRange?.from}
-            min={selectableDateRange?.from?.getTime()}
-            max={selectableDateRange?.to?.getTime()}
-            selected={dateRange}
-            onSelect={(range) => {
-              setDateRange(range);
-              onChange(range);
-            }}
-            numberOfMonths={2}
-            disabled={disabledDays}
-          />
-        </PopoverContent>
-      </Popover>
-    </div>
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button
+          id="date"
+          variant={"outline"}
+          className={cn(
+            "justify-start text-left font-normal  bg-white border-0 rounded-none border-b-2 h-auto mx-2 py-0 px-0",
+            !selectedDateRange && "text-muted-foreground"
+          )}
+        >
+          <CalendarIcon className="mr-2 h-4 w-10" />
+          {isLoading && <Skeleton className=" w-40 h-4" />}
+          {!isLoading && selectedDateRange?.from && selectedDateRange.to ? (
+            <>
+              {"from "}
+              {formatDate(dateRange?.from, temporalAggregation, timezone)}
+              {" to "}
+              {formatDate(dateRange?.to, temporalAggregation, timezone)}
+            </>
+          ) : null}
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-auto p-0" align="start">
+        <Calendar
+          initialFocus
+          mode="range"
+          defaultMonth={selectedDateRange?.from}
+          min={selectableDateRange?.from?.getTime()}
+          max={selectableDateRange?.to?.getTime()}
+          selected={dateRange}
+          onSelect={(range) => {
+            setDateRange(range);
+            onChange(range);
+          }}
+          numberOfMonths={2}
+          disabled={disabledDays}
+        />
+      </PopoverContent>
+    </Popover>
   );
 };
