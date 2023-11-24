@@ -1,14 +1,13 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import {
-  ArrayElement,
-  EnergyConsumptionData,
-  EnergyConsumptionDataElement,
+  EnergyConsumptionDatasets,
+  EnergyConsumptionDataset,
+  BasicFormattedDataset,
   MeasureUnitLabels,
   TemporalAggregations,
 } from "./types";
 import { DateRange } from "react-day-picker";
-import { ChartProps } from "react-chartjs-2";
 import dayjs from "dayjs";
 import weekOfYear from "dayjs/plugin/weekOfYear";
 import weekday from "dayjs/plugin/weekday";
@@ -25,7 +24,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const getTimeLabels = (
-  data: EnergyConsumptionData,
+  data: EnergyConsumptionDatasets,
   aggregationType: TemporalAggregations,
   timezone: string
 ) => {
@@ -105,16 +104,10 @@ const getDataAggregatedByTimeAggregation = (
 };
 
 const aggregateDatasets = (
-  datasets: Array<
-    ArrayElement<ChartProps["data"]["datasets"]> & {
-      datasetType: EnergyConsumptionDataElement["type"];
-      tooltip: EnergyConsumptionDataElement["data"];
-      data: EnergyConsumptionDataElement["data"];
-    }
-  >,
+  datasets: BasicFormattedDataset,
   aggregationType: TemporalAggregations,
   timezone: string
-) => {
+): BasicFormattedDataset => {
   if (!datasets.length) return [];
 
   const aggregatedDatasets = datasets.map((dataset) => {
@@ -169,7 +162,7 @@ const aggregateDatasets = (
   return aggregatedDatasets;
 };
 
-const getValueModifier = (measureUnit: keyof MeasureUnitLabels) => {
+export const getValueModifier = (measureUnit: keyof MeasureUnitLabels) => {
   switch (measureUnit) {
     case "MWh":
       return (value: number) => value / 1000000;
@@ -181,17 +174,12 @@ const getValueModifier = (measureUnit: keyof MeasureUnitLabels) => {
 };
 
 export const formatDatasets = (
-  data: EnergyConsumptionData,
+  data: EnergyConsumptionDatasets,
   dateRange: DateRange | undefined,
   aggregationType: TemporalAggregations,
   timezone: string,
   measureUnit: keyof MeasureUnitLabels
-): Array<
-  ArrayElement<ChartProps["data"]["datasets"]> & {
-    datasetType: EnergyConsumptionDataElement["type"];
-    tooltip: number[];
-  }
-> => {
+): BasicFormattedDataset => {
   if (!data.length) return [];
   const valueModifier = getValueModifier(measureUnit);
 
@@ -203,15 +191,10 @@ export const formatDatasets = (
     timezone
   );
 
-  const formattedDatasets = applyValueDivider(
-    aggregatedDatasets,
-    valueModifier
-  );
-
-  return formattedDatasets;
+  return aggregatedDatasets;
 };
 
-const getMaxValue = (data: EnergyConsumptionData) => {
+const getMaxValue = (data: EnergyConsumptionDatasets) => {
   if (!data.length) return 0;
 
   const allValues = data
@@ -227,38 +210,32 @@ const getMaxValue = (data: EnergyConsumptionData) => {
 };
 
 const formatBasicDatasets = (
-  data: EnergyConsumptionData,
+  data: EnergyConsumptionDatasets,
   valueModifier: (value: number) => number
-): Array<
-  ArrayElement<ChartProps["data"]["datasets"]> & {
-    datasetType: EnergyConsumptionDataElement["type"];
-    tooltip: EnergyConsumptionDataElement["data"];
-    data: EnergyConsumptionDataElement["data"];
-  }
-> => {
+): BasicFormattedDataset => {
   if (!data.length) return [];
 
   const maxValue = getMaxValue(data);
 
   const basicDatasets = data
-    .map((item: EnergyConsumptionDataElement) => {
+    .map((item: EnergyConsumptionDataset) => {
       return {
         datasetType: item.type,
         label: item.label,
         backgroundColor: item.color,
-        data: item.data.map(([timestamp, value]) => [timestamp, value]) as [
-          number,
-          number
-        ][],
-        tooltip: item.data.map(([timestamp, value]) => [timestamp, value]) as [
-          number,
-          number
-        ][],
+        data: item.data.map<[number, number]>(([timestamp, value]) => [
+          timestamp,
+          value,
+        ]),
+        tooltip: item.data.map<[number, number]>(([timestamp, value]) => [
+          timestamp,
+          value,
+        ]),
         ...(item.type === "total" && {
-          data: item.data.map(([timestamp]) => [
+          data: item.data.map<[number, number]>(([timestamp]) => [
             timestamp,
             valueModifier(maxValue) / 100, // 1% of the max value, only to display the total as a line
-          ]) as [number, number][],
+          ]),
         }),
       };
     })
@@ -270,21 +247,9 @@ const formatBasicDatasets = (
 };
 
 export const applyDateRangeFilter = (
-  datasets: Array<
-    ArrayElement<ChartProps["data"]["datasets"]> & {
-      datasetType: EnergyConsumptionDataElement["type"];
-      tooltip: EnergyConsumptionDataElement["data"];
-      data: EnergyConsumptionDataElement["data"];
-    }
-  >,
+  datasets: BasicFormattedDataset,
   dateRange: DateRange | undefined
-): Array<
-  ArrayElement<ChartProps["data"]["datasets"]> & {
-    datasetType: EnergyConsumptionDataElement["type"];
-    tooltip: EnergyConsumptionDataElement["data"];
-    data: EnergyConsumptionDataElement["data"];
-  }
-> => {
+): BasicFormattedDataset => {
   if (!dateRange || !dateRange.from || !dateRange.to) return datasets;
 
   const { from, to } = dateRange;
@@ -293,22 +258,22 @@ export const applyDateRangeFilter = (
   const endFilterRangeTimestamp = to.getTime();
 
   const filteredDataSets = datasets.map((dataset) => {
-    const filteredData = dataset.data?.map((item) => {
+    const filteredData = dataset.data?.map<[number, number]>((item) => {
       if (!item || !Array.isArray(item)) return [0, 0];
       const timestamp = item[0];
       return startFilterRangeTimestamp <= timestamp &&
         timestamp <= endFilterRangeTimestamp
         ? item
         : [timestamp, 0];
-    }) as EnergyConsumptionDataElement["data"];
-    const filteredTooltips = dataset.tooltip?.map((item) => {
+    });
+    const filteredTooltips = dataset.tooltip?.map<[number, number]>((item) => {
       if (!item || !Array.isArray(item)) return [0, 0];
       const timestamp = item[0];
       return startFilterRangeTimestamp <= timestamp &&
         timestamp <= endFilterRangeTimestamp
         ? item
         : [timestamp, 0];
-    }) as EnergyConsumptionDataElement["data"];
+    });
     return {
       ...dataset,
       data: filteredData,
@@ -317,39 +282,6 @@ export const applyDateRangeFilter = (
   });
 
   return filteredDataSets;
-};
-
-const applyValueDivider = (
-  datasets: Array<
-    ArrayElement<ChartProps["data"]["datasets"]> & {
-      datasetType: EnergyConsumptionDataElement["type"];
-      tooltip: EnergyConsumptionDataElement["data"];
-    }
-  >,
-  valueModifier: (value: number, MWhPrice?: number) => number
-) => {
-  if (!datasets.length) return [];
-
-  const formattedDatasets = datasets.map((dataset) => {
-    const formattedValues = dataset.data?.map((datum) => {
-      if (!datum || !Array.isArray(datum)) return datum;
-      const value = datum[1];
-      return dataset.datasetType === "total" ? value : valueModifier(value);
-    });
-    const formattedtooltips = dataset.tooltip?.map((datum) => {
-      if (!datum || !Array.isArray(datum)) return datum;
-      const value = datum[1];
-      return valueModifier(value);
-    });
-
-    return {
-      ...dataset,
-      data: formattedValues,
-      tooltip: formattedtooltips,
-    };
-  });
-
-  return formattedDatasets;
 };
 
 export const formatDate = (

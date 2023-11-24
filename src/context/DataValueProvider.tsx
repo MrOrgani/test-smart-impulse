@@ -7,13 +7,14 @@ import { useEnergyConsumption, useProjects } from "@/lib/react-query/queries";
 import { useTemporalAggregation } from "@/hooks/useTemporalAggregation";
 import { useMeasureUnit } from "@/hooks/useMeasureUnit";
 import { useDateRange } from "@/hooks/useDateRange";
+import { BasicFormattedDataset } from "@/lib/types";
 
 const DataContext = React.createContext<{
-  data: any | null;
+  data: { datasets: BasicFormattedDataset; labels: string[] };
   selectableDateRange: DateRange | undefined;
   isLoading: boolean;
 }>({
-  data: null,
+  data: { datasets: [], labels: [] },
   selectableDateRange: undefined,
   isLoading: true,
 });
@@ -35,7 +36,7 @@ export const DataValueProvider: React.FC<{
     currentBuilding?.timezone ?? "Europe/Paris"
   );
 
-  const formatedDatasets = formatDatasets(
+  const basicDatasets = formatDatasets(
     fetchedData ?? [],
     selectedDateRange,
     selectedTemporalAggregation,
@@ -57,7 +58,7 @@ export const DataValueProvider: React.FC<{
       value={{
         data: {
           labels,
-          datasets: formatedDatasets,
+          datasets: basicDatasets,
         },
         selectableDateRange,
         ...restFetchedData,
