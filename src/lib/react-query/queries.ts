@@ -1,6 +1,6 @@
 import { getBuildings, getEneryConsumptionByBuildingId } from "@/api";
 import { useQuery } from "@tanstack/react-query";
-import { EnergyConsumptionData, IBuilding } from "@/lib/types";
+import { EnergyConsumptionDatasets, IBuilding } from "@/lib/types";
 import { useLocation } from "react-router-dom";
 
 export const useProjects = () => {
@@ -25,7 +25,7 @@ export const useProjects = () => {
 };
 
 export const useEnergyConsumption = (uuid: string | undefined) => {
-  return useQuery<EnergyConsumptionData>({
+  return useQuery<EnergyConsumptionDatasets>({
     queryKey: ["building-energy-consumption", uuid],
     queryFn: () => getEneryConsumptionByBuildingId(uuid),
   });
