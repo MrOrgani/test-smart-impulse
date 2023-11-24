@@ -9,7 +9,7 @@ export const useDateRange = () => {
   const { currentBuilding } = useProjects();
 
   const dateRangeFromUrl = params
-    .get("selectedDateRange")
+    .get("dateRange")
     ?.split("_")
     .map((d) => dayjs(d).tz(currentBuilding?.timezone).toDate());
 
@@ -25,7 +25,7 @@ export const useDateRange = () => {
     );
     setURLSearchParams({
       ...searchAsObject,
-      selectedDateRange: encodeURI(
+      dateRange: encodeURI(
         `${
           selectedDateRange?.from?.toISOString() ?? ""
         }_${selectedDateRange?.to?.toISOString()}`
