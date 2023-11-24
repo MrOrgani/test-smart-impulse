@@ -1,14 +1,11 @@
 import React from "react";
 import { DatePickerWithRange } from "./DateRangePicker";
-import { useDataParams } from "@/context/DataParamsProvider";
 import { useDataContext } from "@/context/DataValueProvider";
+import { useDateRange } from "@/hooks/useDateRange";
 
 export const DateSelector = () => {
-  const {
-    dateRangeFilter: { selectedDateRange },
-  } = useDataParams();
-  const { setDateRangeFilter, selectableDateRange, isLoading } =
-    useDataContext();
+  const [selectedDateRange, setDateRangeFilter] = useDateRange();
+  const { selectableDateRange, isLoading } = useDataContext();
 
   return (
     <DatePickerWithRange
