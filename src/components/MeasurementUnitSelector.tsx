@@ -19,13 +19,13 @@ export const MeasurementUnitSelector: React.FC<Props> = ({
   options = Object.entries(measurementUnitOptions),
 }) => {
   const {
-    measureUnitParams: { measureUnit, setMaesureUnit },
+    measureUnitParams: { measureUnit, setMeasureUnit },
   } = useDataParams();
   return (
     <Select
       defaultValue={measureUnit}
       value={measureUnit}
-      onValueChange={(value: MeasureUnit) => setMaesureUnit(value)}
+      onValueChange={(value: MeasureUnit) => setMeasureUnit(value)}
     >
       <SelectTrigger
         className={
