@@ -20,7 +20,7 @@ export const AmountSpentWidget = () => {
   return (
     <div className="grid grid-cols-2">
       <span className={`text-xs font-semibold `}>Total</span>
-      <span className=" text-md font-semibold">€ {amount}</span>
+      <span className=" text-md font-semibold text-end">€ {amount}</span>
     </div>
   );
 };

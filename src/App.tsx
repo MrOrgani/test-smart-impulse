@@ -13,25 +13,23 @@ function App() {
   return (
     <div
       className={
-        "container flex items-center justify-center mx-auto my-auto h-screen"
+        "flex-col xl:flex xl:flex-row items-center justify-center w-screen p-2 h-screen"
       }
     >
       <div className={"bg-white rounded-md"}>
         <Header />
         <div className="border-t">
-          <div className="">
-            <div className="flex">
-              <Sidebar buildings={buildings ?? []} isLoading={isLoading} />
-              <div className="col-span-3 lg:col-span-4 lg:border-l">
-                <div className="h-full px-4 py-6 lg:px-8">
-                  {location.pathname === "/" ? (
-                    <div>To define</div>
-                  ) : (
-                    <DataValueProvider>
-                      <Outlet />
-                    </DataValueProvider>
-                  )}
-                </div>
+          <div className="flex flex-col xl:flex xl:flex-row">
+            <Sidebar buildings={buildings ?? []} isLoading={isLoading} />
+            <div className="col-span-3 xl:col-span-4 xl:border-l">
+              <div className="h-full p-2 xl:px-8">
+                {location.pathname === "/" ? (
+                  <div>To define</div>
+                ) : (
+                  <DataValueProvider>
+                    <Outlet />
+                  </DataValueProvider>
+                )}
               </div>
             </div>
           </div>

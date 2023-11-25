@@ -13,17 +13,17 @@ import { MostExpensiveTemporalAggregationPerCategory } from "./Widgets/MostExpen
 export const Dashboard = () => {
   const [temporalAggregation] = useTemporalAggregation();
   return (
-    <div>
-      <Card className="">
-        <CardContent className="flex items-center p-2">
+    <div className="">
+      <div className="flex flex-col items-center gap-2 lg:flex-row my-2">
+        <div className="flex">
           Consumption in <MeasurementUnitSelector />
-          <DateSelector />
-          <TemporalAggregationSelector />
-          <ResetButton />
-        </CardContent>
-      </Card>
-      <Card className="grid grid-cols-2">
-        <Card className="grid grid-cols-2 grid-rows-2">
+        </div>
+        <DateSelector />
+        <TemporalAggregationSelector />
+        <ResetButton />
+      </div>
+      <div className="flex flex-col lg:grid lg:ggrid-cols-2">
+        <div className="flex flex-col lg:grid lg:grid-cols-2 lg:grid-rows-2">
           <Card className="flex flex-col">
             <CardTitle className="items-baseline text-xs text-gray-500">
               Amount spent
@@ -42,21 +42,17 @@ export const Dashboard = () => {
           </Card>
           <Card></Card>
           <Card></Card>
-        </Card>
-        <Card className="flex flex-col">
+        </div>
+        <Card className="flex flex-col p-2">
           <CardTitle className="items-baseline text-xs text-gray-500">
             Most expensive {temporalAggregation} per category
           </CardTitle>
-          <CardContent className="mt-auto">
-            <MostExpensiveTemporalAggregationPerCategory />
-          </CardContent>
+          <MostExpensiveTemporalAggregationPerCategory />
         </Card>
-      </Card>
-      <Card className="col-span-4">
-        <CardContent className=" ">
-          <StackedBarChart />
-        </CardContent>
-      </Card>
+      </div>
+      <div className={" overflow-scroll"}>
+        <StackedBarChart />
+      </div>
     </div>
   );
 };

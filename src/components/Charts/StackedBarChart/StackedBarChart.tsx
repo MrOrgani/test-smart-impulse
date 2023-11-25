@@ -8,6 +8,8 @@ import { useTemporalAggregation } from "@/hooks/useTemporalAggregation";
 import { useMeasureUnit } from "@/hooks/useMeasureUnit";
 import { formatDate, getValueModifier } from "@/lib/utils";
 import { stackedBarChartFormatter } from "./utils";
+import React from "react";
+import { Button } from "@/components/ui/button";
 
 ChartJS.register(...registerables, zoomPlugin);
 
@@ -24,88 +26,100 @@ export const StackedBarChart = () => {
     valueModifier
   );
 
+  const [showLegend, setShowLegend] = React.useState(false);
+
   return (
-    <div>
-      {isLoading || data.labels.length === 0 ? (
-        <Skeleton className="w-full h-[360px] mt-2" />
-      ) : (
-        <Chart
-          data={{
-            datasets: formattedDatasets,
-            labels: data.labels,
-          }}
-          className="mt-2"
-          type="bar"
-          options={{
-            plugins: {
-              legend: {
-                position: "bottom",
-              },
-              zoom: {
+    <div className="lg:flex">
+      <div className="w-[730px] p-2 h-[400px]">
+        {isLoading || data.labels.length === 0 ? (
+          <Skeleton className="w-full h-[360px] mt-2" />
+        ) : (
+          <Chart
+            data={{
+              datasets: formattedDatasets,
+              labels: data.labels,
+            }}
+            type="bar"
+            options={{
+              plugins: {
+                legend: {
+                  position: "right",
+                  fullSize: true,
+                  display: showLegend,
+                },
                 zoom: {
-                  wheel: {
-                    enabled: true,
-                  },
-                  pinch: {
-                    enabled: true,
-                  },
-                  mode: "x",
-                },
-              },
-              title: {
-                display: true,
-                text: `Energy consumption for ${currentBuilding?.name}`,
-              },
-              tooltip: {
-                callbacks: {
-                  title: function (context) {
-                    return formatDate(
-                      context[0].label,
-                      selectedTemporalAggregation,
-                      currentBuilding?.timezone
-                    );
-                  },
-                  label: function (context) {
-                    let label = context.dataset.label || "";
-                    if (label) {
-                      label += ": ";
-                    }
-                    if (context.parsed.x !== null) {
-                      label += `${
-                        context.dataset.tooltip[context.parsed.x]
-                      } ${measureUnit}`;
-                    }
-                    return label;
+                  zoom: {
+                    wheel: {
+                      enabled: true,
+                    },
+                    pinch: {
+                      enabled: true,
+                    },
+                    mode: "x",
                   },
                 },
-              },
-            },
-            responsive: true,
-            scales: {
-              x: {
-                stacked: true,
-                ticks: {
-                  callback: function (value, index, ticks) {
-                    return formatDate(
-                      data?.labels?.[value],
-                      selectedTemporalAggregation,
-                      currentBuilding?.timezone
-                    );
+                title: {
+                  display: true,
+                  text: `Energy consumption for ${currentBuilding?.name}`,
+                },
+                tooltip: {
+                  callbacks: {
+                    title: function (context) {
+                      return formatDate(
+                        context[0].label,
+                        selectedTemporalAggregation,
+                        currentBuilding?.timezone
+                      );
+                    },
+                    label: function (context) {
+                      let label = context.dataset.label || "";
+                      if (label) {
+                        label += ": ";
+                      }
+                      if (context.parsed.x !== null) {
+                        label += `${
+                          context.dataset.tooltip[context.parsed.x]
+                        } ${measureUnit}`;
+                      }
+                      return label;
+                    },
                   },
                 },
               },
-              y: {
-                stacked: true,
-                ticks: {
-                  callback: function (value, index, values) {
-                    return `${value} ${measureUnit}`;
+              responsive: true,
+              scales: {
+                x: {
+                  stacked: true,
+                  ticks: {
+                    callback: function (value, index, ticks) {
+                      return formatDate(
+                        data?.labels?.[value],
+                        selectedTemporalAggregation,
+                        currentBuilding?.timezone
+                      );
+                    },
+                  },
+                },
+                y: {
+                  stacked: true,
+                  ticks: {
+                    callback: function (value, index, values) {
+                      return `${value} ${measureUnit}`;
+                    },
                   },
                 },
               },
-            },
-          }}
-        />
-      )}
+            }}
+          />
+        )}
+      </div>
+      <Button
+        onClick={() => setShowLegend(!showLegend)}
+        size={"sm"}
+        className="mt-auto"
+      >
+        {showLegend ? "Hide legend" : "Show legend"}
+      </Button>
     </div>
   );
 };

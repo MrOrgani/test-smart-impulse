@@ -32,12 +32,12 @@ export const Sidebar: React.FC<{
   }
 
   return (
-    <div className="space-y-4 py-4">
+    <div className="space-y-4 py-2">
       <div className="py-2">
         <h2 className="relative px-7 text-lg font-semibold tracking-tight">
           Batiments
         </h2>
-        <ScrollArea className="h-[300px] px-1">
+        <ScrollArea className="px-1">
           <div className="space-y-1 p-2">
             {isLoading &&
               new Array(3).fill(0).map((_, i) => <ButtonSkeleton key={i} />)}

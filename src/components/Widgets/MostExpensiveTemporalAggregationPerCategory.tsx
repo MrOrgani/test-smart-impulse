@@ -55,7 +55,7 @@ export const MostExpensiveTemporalAggregationPerCategory = () => {
             <span className="font-semibold text-end self-center	">
               {formatDate(dataset.data[0], temporalAggregation)}
             </span>
-            <span className="font-semibold text-end self-center">
+            <span className="font-semibold text-end self-center whitespace-nowrap	">
               (€ {valueModifier(dataset.data[1]).toFixed(2)})
             </span>
           </React.Fragment>

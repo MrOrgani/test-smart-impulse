@@ -11,7 +11,7 @@ export const ResetButton = () => {
     <Button
       variant={"outline"}
       aria-label="Reset date range filter"
-      className="bg-white p-1 ml-auto"
+      className="bg-white p-1 lg:ml-auto"
       onClick={() => setDateRangeFilter(selectableDateRange)}
     >
       <RotateCw />

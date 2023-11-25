@@ -31,10 +31,10 @@ export const TemporalAggregationSelector = () => {
           <SelectValue placeholder="Select" />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="day">Day</SelectItem>
-          <SelectItem value="week">Week</SelectItem>
-          <SelectItem value="month">Month</SelectItem>
-          <SelectItem value="year">Year</SelectItem>
+          <SelectItem value="day">day</SelectItem>
+          <SelectItem value="week">week</SelectItem>
+          <SelectItem value="month">month</SelectItem>
+          <SelectItem value="year">year</SelectItem>
         </SelectContent>
       </Select>
     </div>

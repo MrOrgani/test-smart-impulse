@@ -36,7 +36,7 @@ export const MostExpensiveCategoryWidget = () => {
       >
         {mostExpensiveCategory.label}
       </span>
-      <span className="text-md font-semibold"> € {amount}</span>
+      <span className="text-md font-semibold text-end"> € {amount}</span>
     </div>
   );
 };
