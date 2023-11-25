@@ -17,5 +17,10 @@ export const AmountSpentWidget = () => {
     return <Skeleton className="w-24 h-6" />;
   }
 
-  return <span className=" text-lg font-semibold">€ {amount}</span>;
+  return (
+    <div className="grid grid-cols-2">
+      <span className={`text-xs font-semibold `}>Total</span>
+      <span className=" text-md font-semibold">€ {amount}</span>
+    </div>
+  );
 };

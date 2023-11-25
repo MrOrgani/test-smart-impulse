@@ -27,16 +27,16 @@ export const MostExpensiveCategoryWidget = () => {
   ).toFixed(2);
 
   return (
-    <div className="flex flex-col">
+    <div className="grid grid-cols-2">
       <span
-        className={`text-lg font-semibold underline  `}
+        className={`text-xs font-semibold underline  `}
         style={{
           textDecorationColor: mostExpensiveCategory.backgroundColor,
         }}
       >
         {mostExpensiveCategory.label}
       </span>
-      <span className="text-lg font-semibold"> € {amount}</span>
+      <span className="text-md font-semibold"> € {amount}</span>
     </div>
   );
 };

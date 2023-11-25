@@ -13,7 +13,7 @@ export const TemporalAggregationSelector = () => {
   const [selectedTemporalAggregation, setSelectedTemporalAggregation] =
     useTemporalAggregation();
   return (
-    <div className="flex items-center ml-auto">
+    <div className="flex items-center">
       <Label htmlFor="temporalAggragtion" className="font-normal ml-auto">
         <span>aggregated by</span>
       </Label>

@@ -15,7 +15,7 @@ export const Dashboard = () => {
   return (
     <div>
       <Card className="">
-        <CardContent className="flex items-center">
+        <CardContent className="flex items-center p-2">
           Consumption in <MeasurementUnitSelector />
           <DateSelector />
           <TemporalAggregationSelector />
@@ -23,12 +23,12 @@ export const Dashboard = () => {
         </CardContent>
       </Card>
       <Card className="grid grid-cols-2">
-        <Card className="grid grid-cols-2">
+        <Card className="grid grid-cols-2 grid-rows-2">
           <Card className="flex flex-col">
             <CardTitle className="items-baseline text-xs text-gray-500">
               Amount spent
             </CardTitle>
-            <CardContent className="mt-auto">
+            <CardContent className=" p-4">
               <AmountSpentWidget />
             </CardContent>
           </Card>
@@ -36,12 +36,12 @@ export const Dashboard = () => {
             <CardTitle className="items-baseline text-xs text-gray-500">
               Most expensive category
             </CardTitle>
-            <CardContent className="mt-auto">
+            <CardContent className="mt-auto p-4">
               <MostExpensiveCategoryWidget />
             </CardContent>
           </Card>
-          <Card className="flex flex-col"></Card>
-          <Card className="flex flex-col"></Card>
+          <Card></Card>
+          <Card></Card>
         </Card>
         <Card className="flex flex-col">
           <CardTitle className="items-baseline text-xs text-gray-500">
