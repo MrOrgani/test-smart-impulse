@@ -177,13 +177,11 @@ export const formatDatasets = (
   data: EnergyConsumptionDatasets,
   dateRange: DateRange | undefined,
   aggregationType: TemporalAggregations,
-  timezone: string,
-  measureUnit: keyof MeasureUnitLabels
+  timezone: string
 ): BasicFormattedDataset => {
   if (!data.length) return [];
-  const valueModifier = getValueModifier(measureUnit);
 
-  const basicDatasets = formatBasicDatasets(data, valueModifier);
+  const basicDatasets = formatBasicDatasets(data);
   const timeFilteredDatasets = applyDateRangeFilter(basicDatasets, dateRange);
   const aggregatedDatasets = aggregateDatasets(
     timeFilteredDatasets,
@@ -194,28 +192,10 @@ export const formatDatasets = (
   return aggregatedDatasets;
 };
 
-const getMaxValue = (data: EnergyConsumptionDatasets) => {
-  if (!data.length) return 0;
-
-  const allValues = data
-    .map((dataset) => {
-      return dataset.data.map((item) => {
-        if (!item || !Array.isArray(item)) return 0;
-        return item[1];
-      });
-    })
-    .flat();
-
-  return Math.max(...allValues.flat());
-};
-
 const formatBasicDatasets = (
-  data: EnergyConsumptionDatasets,
-  valueModifier: (value: number) => number
+  data: EnergyConsumptionDatasets
 ): BasicFormattedDataset => {
   if (!data.length) return [];
-
-  const maxValue = getMaxValue(data);
 
   const basicDatasets = data
     .map((item: EnergyConsumptionDataset) => {
@@ -231,12 +211,6 @@ const formatBasicDatasets = (
           timestamp,
           value,
         ]),
-        ...(item.type === "total" && {
-          data: item.data.map<[number, number]>(([timestamp]) => [
-            timestamp,
-            valueModifier(maxValue) / 100, // 1% of the max value, only to display the total as a line
-          ]),
-        }),
       };
     })
     .sort((a) => {
@@ -285,7 +259,7 @@ export const applyDateRangeFilter = (
 };
 
 export const formatDate = (
-  date: Date | string | undefined,
+  date: Date | string | undefined | number,
   selectedTemporalAggregation: TemporalAggregations,
   timezone: string = "Europe/Paris"
 ) => {

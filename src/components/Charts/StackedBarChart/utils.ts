@@ -11,7 +11,9 @@ export const stackedBarChartFormatter = (
     const formattedValues = dataset.data?.map((datum) => {
       if (!datum || !Array.isArray(datum)) return datum;
       const value = datum[1];
-      return dataset.datasetType === "total" ? value : valueModifier(value);
+      return dataset.datasetType === "total"
+        ? valueModifier(value) / 100
+        : valueModifier(value);
     });
     const formattedtooltips = dataset.tooltip?.map((datum) => {
       if (!datum || !Array.isArray(datum)) return datum;

@@ -5,7 +5,6 @@ import * as d3 from "d3";
 import dayjs from "dayjs";
 import { useEnergyConsumption, useProjects } from "@/lib/react-query/queries";
 import { useTemporalAggregation } from "@/hooks/useTemporalAggregation";
-import { useMeasureUnit } from "@/hooks/useMeasureUnit";
 import { useDateRange } from "@/hooks/useDateRange";
 import { BasicFormattedDataset } from "@/lib/types";
 
@@ -27,7 +26,6 @@ export const DataValueProvider: React.FC<{
     currentBuilding?.uuid
   );
   const [selectedTemporalAggregation] = useTemporalAggregation();
-  const [measureUnit] = useMeasureUnit();
   const [selectedDateRange] = useDateRange();
 
   const labels = getTimeLabels(
@@ -40,8 +38,7 @@ export const DataValueProvider: React.FC<{
     fetchedData ?? [],
     selectedDateRange,
     selectedTemporalAggregation,
-    currentBuilding?.timezone ?? "Europe/Paris",
-    measureUnit
+    currentBuilding?.timezone ?? "Europe/Paris"
   );
 
   const selectableDateExtendArray = d3.extent(labels);
