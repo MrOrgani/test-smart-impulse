@@ -18,8 +18,6 @@ export const MostExpensiveCategoryWidget = () => {
     }))
     .sort((a, b) => b.data - a.data);
 
-  console.log("reducedDataCategories", reducedDataCategories);
-
   const mostExpensiveCategory = reducedDataCategories[0];
   if (isLoading || !mostExpensiveCategory?.data) {
     return <Skeleton className="w-24 h-6" />;
