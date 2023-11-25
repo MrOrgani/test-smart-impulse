@@ -71,4 +71,5 @@ export type BasicFormattedDataset = Array<{
   data: EnergyConsumptionDataset["data"];
   tooltip: EnergyConsumptionDataset["data"];
   label: EnergyConsumptionDataset["label"];
+  backgroundColor: EnergyConsumptionDataset["color"];
 }>;

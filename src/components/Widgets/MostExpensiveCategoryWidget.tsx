@@ -33,7 +33,7 @@ export const MostExpensiveCategoryWidget = () => {
       <span
         className={`text-lg font-semibold underline  `}
         style={{
-          textDecorationColor: mostExpensiveCategory.color,
+          textDecorationColor: mostExpensiveCategory.backgroundColor,
         }}
       >
         {mostExpensiveCategory.label}
