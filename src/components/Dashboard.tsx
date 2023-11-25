@@ -36,7 +36,7 @@ export const Dashboard = () => {
             <CardTitle className="items-baseline text-xs text-gray-500">
               Most expensive category
             </CardTitle>
-            <CardContent className="mt-auto p-4">
+            <CardContent className=" p-4">
               <MostExpensiveCategoryWidget />
             </CardContent>
           </Card>
