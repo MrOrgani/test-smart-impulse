@@ -1,7 +1,7 @@
 import React from "react";
 import { useDataContext } from "@/context/DataValueProvider";
 import { getValueModifier } from "@/lib/utils";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "../ui/skeleton";
 
 export const AmountSpentWidget = () => {
   const { data, isLoading } = useDataContext();
