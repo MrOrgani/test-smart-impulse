@@ -6,6 +6,7 @@ import { IBuiding } from "@/lib/types";
 import { Skeleton } from "./ui/skeleton";
 import { useSimilarDateRange } from "@/hooks/useSimilarDateRange";
 import { SameDateRangeCheckbox } from "./SameDateRangeCheckbox";
+import { useDateRange } from "@/hooks/useDateRange";
 
 const ButtonSkeleton = () => (
   <Skeleton className="flex items-center w-auto animate-pulse">
@@ -22,6 +23,7 @@ export const Sidebar: React.FC<{
 }> = ({ buildings, isLoading }) => {
   const location = useLocation();
 
+  const [selectedDateRange] = useDateRange();
   const [similarDateRange] = useSimilarDateRange();
 
   const params = new URLSearchParams(location.search);
@@ -59,7 +61,7 @@ export const Sidebar: React.FC<{
                 );
               })}
           </div>
-          <SameDateRangeCheckbox />
+          {selectedDateRange && <SameDateRangeCheckbox />}
         </ScrollArea>
       </div>
     </div>
