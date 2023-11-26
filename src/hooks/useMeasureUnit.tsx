@@ -1,14 +1,17 @@
-import { MeasureUnit } from "@/lib/types";
 import React from "react";
+import type { MeasureUnit } from "@/lib/types";
 import { useSearchParams } from "react-router-dom";
 
-export const useMeasureUnit = () => {
+export const useMeasureUnit = (): readonly [
+  MeasureUnit,
+  (selectedMeasureUnit: MeasureUnit) => void,
+] => {
   const [params, setURLSearchParams] = useSearchParams();
 
   const measureUnit = (params.get("measureUnit") as MeasureUnit) ?? "MWh";
-  const setMeasureUnit = (selectedMeasureUnit: MeasureUnit) => {
-    const searchAsObject: { [key: string]: string } = Object.fromEntries(
-      new URLSearchParams(params)
+  const setMeasureUnit = (selectedMeasureUnit: MeasureUnit): void => {
+    const searchAsObject: Record<string, string> = Object.fromEntries(
+      new URLSearchParams(params),
     );
 
     setURLSearchParams({

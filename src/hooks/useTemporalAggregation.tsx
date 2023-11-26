@@ -1,19 +1,23 @@
 import React from "react";
-import { TemporalAggregations } from "@/lib/types";
+import type { TemporalAggregations } from "@/lib/types";
 import { useSearchParams } from "react-router-dom";
 
-export const useTemporalAggregation = () => {
+export const useTemporalAggregation = (): readonly [
+  TemporalAggregations,
+  (selectedTemporalAggregation: TemporalAggregations) => void,
+] => {
   const [params, setURLSearchParams] = useSearchParams();
 
   // TEMPORAL AGGREGATION
   const selectedTemporalAggregation =
     (params.get("temporalAggregation") as TemporalAggregations) ?? "day";
   const setSelectedTemporalAggregation = (
-    selectedTemporalAggregation: TemporalAggregations
-  ) => {
-    const searchAsObject: { [key: string]: string } = Object.fromEntries(
-      new URLSearchParams(params)
+    selectedTemporalAggregation: TemporalAggregations,
+  ): void => {
+    const searchAsObject: Record<string, string> = Object.fromEntries(
+      new URLSearchParams(params),
     );
+
     setURLSearchParams({
       ...searchAsObject,
       temporalAggregation: selectedTemporalAggregation,
