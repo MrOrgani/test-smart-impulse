@@ -1,6 +1,8 @@
 import { useDataContext } from "@/context/DataValueProvider";
 import { Chart as ChartJS, registerables } from "chart.js";
+import type { TooltipItem } from "chart.js";
 import { Chart } from "react-chartjs-2";
+import type { ChartProps } from "react-chartjs-2";
 import zoomPlugin from "chartjs-plugin-zoom";
 import { useProjects } from "@/lib/react-query/queries";
 import { Skeleton } from "../../ui/skeleton";
@@ -11,10 +13,11 @@ import { getValueModifier } from "@/utils/getValueModifier";
 import { stackedBarChartFormatter } from "./utils";
 import React from "react";
 import { Button } from "@/components/ui/button";
+import type { ArrayElement } from "@/lib/types";
 
 ChartJS.register(...registerables, zoomPlugin);
 
-export const StackedBarChart = () => {
+export const StackedBarChart: React.FC = () => {
   const { currentBuilding } = useProjects();
   const { data, isLoading } = useDataContext();
 
@@ -72,9 +75,17 @@ export const StackedBarChart = () => {
                         currentBuilding?.timezone,
                       );
                     },
-                    label: function (context) {
-                      let label = context.dataset.label || "";
-                      if (label) {
+                    label: function (
+                      context: TooltipItem<"bar"> & {
+                        dataset: ArrayElement<
+                          ChartProps<"bar", number[]>["data"]["datasets"]
+                        > & {
+                          tooltip: number[];
+                        };
+                      },
+                    ) {
+                      let label = context.dataset.label ?? "";
+                      if (label !== "") {
                         label += ": ";
                       }
                       if (context.parsed.x !== null) {
@@ -92,9 +103,9 @@ export const StackedBarChart = () => {
                 x: {
                   stacked: true,
                   ticks: {
-                    callback: function (value, index, ticks) {
+                    callback: function (value) {
                       return formatDate(
-                        data?.labels?.[value],
+                        data?.labels?.[value as number],
                         selectedTemporalAggregation,
                         currentBuilding?.timezone,
                       );
@@ -104,7 +115,7 @@ export const StackedBarChart = () => {
                 y: {
                   stacked: true,
                   ticks: {
-                    callback: function (value, index, values) {
+                    callback: function (value) {
                       return `${value} ${measureUnit}`;
                     },
                   },
@@ -115,7 +126,9 @@ export const StackedBarChart = () => {
         )}
       </div>
       <Button
-        onClick={() => setShowLegend(!showLegend)}
+        onClick={() => {
+          setShowLegend(!showLegend);
+        }}
         size={"sm"}
         className="mt-auto"
       >
