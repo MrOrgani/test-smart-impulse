@@ -1,14 +1,14 @@
 import React from "react";
 import { Card, CardContent, CardTitle } from "./ui/card";
-import { StackedBarChart } from "./Charts/StackedBarChart/StackedBarChart";
+import { StackedBarChart } from "./charts/StackedBarChart/StackedBarChart";
 import { DateSelector } from "./DateSelector";
 import { TemporalAggregationSelector } from "./TemporalAggregationSelector";
 import { ResetButton } from "./ResetButton";
 import { MeasurementUnitSelector } from "./MeasurementUnitSelector";
-import { AmountSpentWidget } from "./Widgets/AmountSpentWidget";
-import { MostExpensiveCategoryWidget } from "./Widgets/MostExpensiveCategoryWidget";
+import { AmountSpentWidget } from "./widgets/AmountSpentWidget";
+import { MostExpensiveCategoryWidget } from "./widgets/MostExpensiveCategoryWidget";
 import { useTemporalAggregation } from "@/hooks/useTemporalAggregation";
-import { MostExpensiveTemporalAggregationPerCategory } from "./Widgets/MostExpensiveTemporalAggregationPerCategory";
+import { MostExpensiveTemporalAggregationPerCategory } from "./widgets/MostExpensiveTemporalAggregationPerCategory";
 
 export const Dashboard: React.FC = () => {
   const [temporalAggregation] = useTemporalAggregation();
