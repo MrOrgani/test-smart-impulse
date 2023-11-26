@@ -28,7 +28,7 @@ export const Sidebar: React.FC<{
   const [similarDateRange] = useSimilarDateRange();
 
   const params = new URLSearchParams(location.search);
-  if (similarDateRange === "false") {
+  if (["false", null].includes(similarDateRange)) {
     params.delete("dateRange");
   }
 
