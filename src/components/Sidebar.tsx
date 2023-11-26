@@ -36,7 +36,7 @@ export const Sidebar: React.FC<{
     <div className="space-y-4 py-2">
       <div className="py-2">
         <h2 className="relative px-7 text-lg font-semibold tracking-tight">
-          Batiments
+          Projects
         </h2>
         <ScrollArea className="px-1">
           <div className="space-y-1 p-2">
@@ -62,7 +62,7 @@ export const Sidebar: React.FC<{
                 );
               })}
           </div>
-          {selectedDateRange !== null && <SameDateRangeCheckbox />}
+          {selectedDateRange !== undefined && <SameDateRangeCheckbox />}
         </ScrollArea>
       </div>
     </div>
