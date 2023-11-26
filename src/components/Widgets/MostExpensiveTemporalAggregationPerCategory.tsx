@@ -1,6 +1,7 @@
 import React from "react";
 import { useDataContext } from "@/context/DataValueProvider";
-import { formatDate, getValueModifier } from "@/lib/utils";
+import { formatDate } from "@/utils/formatDate";
+import { getValueModifier } from "@/utils/getValueModifier";
 import { Skeleton } from "../ui/skeleton";
 import { useTemporalAggregation } from "@/hooks/useTemporalAggregation";
 
@@ -28,7 +29,7 @@ export const MostExpensiveTemporalAggregationPerCategory = () => {
     // get the highest value for each category
     const highestValue = dataset.data.reduce(
       (acc, curr) => (acc[1] > curr[1] ? acc : curr),
-      [0, 0]
+      [0, 0],
     );
 
     return {

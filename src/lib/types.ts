@@ -40,33 +40,33 @@ type FetchedDataSet = {
     }
 );
 
-export type EnergyConsumptionDatasets = Array<FetchedDataSet>;
+export type EnergyConsumptionDatasets = FetchedDataSet[];
 
 export type ArrayElement<ArrayType extends readonly unknown[]> =
-  ArrayType extends readonly (infer ElementType)[] ? ElementType : never;
+  ArrayType extends ReadonlyArray<infer ElementType> ? ElementType : never;
 
 export type EnergyConsumptionDataset = ArrayElement<EnergyConsumptionDatasets>;
 
-export type IBuilding = {
+export interface IBuilding {
   name: string;
   timezone: string;
   uuid: string;
-};
+}
 
 export type TemporalAggregations = "day" | "week" | "month" | "year";
 
-export type IBuiding = {
+export interface IBuiding {
   uuid: string;
   name: string;
   timezone: string;
-};
+}
 
 export type MeasureUnit = "MWh" | "kWh" | "euros";
 export type MeasureUnitLabels = {
   [key in MeasureUnit]: string;
 };
 
-export type BasicFormattedDataset = Array<{
+export type BasicFormattedDatasets = Array<{
   datasetType: EnergyConsumptionDataset["type"];
   data: EnergyConsumptionDataset["data"];
   tooltip: EnergyConsumptionDataset["data"];

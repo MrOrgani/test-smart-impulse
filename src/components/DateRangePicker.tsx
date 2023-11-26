@@ -1,8 +1,9 @@
 import * as React from "react";
 import { Calendar as CalendarIcon } from "lucide-react";
-import { DateRange } from "react-day-picker";
+import type { DateRange } from "react-day-picker";
 
-import { cn, formatDate } from "@/lib/utils";
+import { cn } from "@/utils/utils";
+import { formatDate } from "@/utils/formatDate";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -12,9 +13,9 @@ import {
 } from "@/components/ui/popover";
 import dayjs from "dayjs";
 import { Skeleton } from "./ui/skeleton";
-import { TemporalAggregations } from "@/lib/types";
+import type { TemporalAggregations } from "@/lib/types";
 
-type DatePickerProps = {
+interface DatePickerProps {
   className?: string;
   date?: Date;
   onChange: (date: DateRange | undefined) => void;
@@ -23,7 +24,7 @@ type DatePickerProps = {
   isLoading: boolean;
   temporalAggregation: TemporalAggregations;
   timezone: string | undefined;
-};
+}
 
 export const DatePickerWithRange: React.FC<DatePickerProps> = ({
   className,
@@ -35,7 +36,7 @@ export const DatePickerWithRange: React.FC<DatePickerProps> = ({
   timezone,
 }) => {
   const [dateRange, setDateRange] = React.useState<DateRange | undefined>(
-    selectedDateRange
+    selectedDateRange,
   );
 
   React.useEffect(() => {
@@ -55,12 +56,14 @@ export const DatePickerWithRange: React.FC<DatePickerProps> = ({
           variant={"outline"}
           className={cn(
             "justify-start text-left font-normal  bg-white border-0 rounded-none border-b-2 h-auto mx-2 py-0 px-0",
-            !selectedDateRange && "text-muted-foreground"
+            selectedDateRange === undefined && "text-muted-foreground",
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-10" />
           {isLoading && <Skeleton className=" w-40 h-4" />}
-          {!isLoading && selectedDateRange?.from && selectedDateRange.to ? (
+          {!isLoading &&
+          selectedDateRange?.from !== undefined &&
+          selectedDateRange.to !== undefined ? (
             <>
               {"from "}
               {formatDate(dateRange?.from, temporalAggregation, timezone)}

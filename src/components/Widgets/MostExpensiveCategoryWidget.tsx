@@ -1,6 +1,6 @@
 import React from "react";
 import { useDataContext } from "@/context/DataValueProvider";
-import { getValueModifier } from "@/lib/utils";
+import { getValueModifier } from "@/utils/getValueModifier";
 import { Skeleton } from "../ui/skeleton";
 
 export const MostExpensiveCategoryWidget = () => {
@@ -23,7 +23,7 @@ export const MostExpensiveCategoryWidget = () => {
     return <Skeleton className="w-24 h-6" />;
   }
   const amount = getValueModifier("euros")(
-    mostExpensiveCategory?.data!
+    mostExpensiveCategory?.data!,
   ).toFixed(2);
 
   return (

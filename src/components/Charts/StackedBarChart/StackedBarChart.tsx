@@ -6,7 +6,8 @@ import { useProjects } from "@/lib/react-query/queries";
 import { Skeleton } from "../../ui/skeleton";
 import { useTemporalAggregation } from "@/hooks/useTemporalAggregation";
 import { useMeasureUnit } from "@/hooks/useMeasureUnit";
-import { formatDate, getValueModifier } from "@/lib/utils";
+import { formatDate } from "@/utils/formatDate";
+import { getValueModifier } from "@/utils/getValueModifier";
 import { stackedBarChartFormatter } from "./utils";
 import React from "react";
 import { Button } from "@/components/ui/button";
@@ -23,7 +24,7 @@ export const StackedBarChart = () => {
   const valueModifier = getValueModifier(measureUnit);
   const formattedDatasets = stackedBarChartFormatter(
     data.datasets,
-    valueModifier
+    valueModifier,
   );
 
   const [showLegend, setShowLegend] = React.useState(false);
@@ -68,7 +69,7 @@ export const StackedBarChart = () => {
                       return formatDate(
                         context[0].label,
                         selectedTemporalAggregation,
-                        currentBuilding?.timezone
+                        currentBuilding?.timezone,
                       );
                     },
                     label: function (context) {
@@ -95,7 +96,7 @@ export const StackedBarChart = () => {
                       return formatDate(
                         data?.labels?.[value],
                         selectedTemporalAggregation,
-                        currentBuilding?.timezone
+                        currentBuilding?.timezone,
                       );
                     },
                   },

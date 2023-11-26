@@ -1,15 +1,16 @@
 import React from "react";
-import { formatDatasets, getTimeLabels } from "@/lib/utils";
+import { formatDatasets } from "@/utils/utils";
+import { getTimeLabels } from "@/utils/getTimeLabels";
 import { DateRange } from "react-day-picker";
 import * as d3 from "d3";
 import dayjs from "dayjs";
 import { useEnergyConsumption, useProjects } from "@/lib/react-query/queries";
 import { useTemporalAggregation } from "@/hooks/useTemporalAggregation";
 import { useDateRange } from "@/hooks/useDateRange";
-import { BasicFormattedDataset } from "@/lib/types";
+import { BasicFormattedDatasets } from "@/lib/types";
 
 const DataContext = React.createContext<{
-  data: { datasets: BasicFormattedDataset; labels: string[] };
+  data: { datasets: BasicFormattedDatasets; labels: string[] };
   selectableDateRange: DateRange | undefined;
   isLoading: boolean;
 }>({
@@ -23,7 +24,7 @@ export const DataValueProvider: React.FC<{
 }> = ({ children }) => {
   const { currentBuilding } = useProjects();
   const { data: fetchedData, ...restFetchedData } = useEnergyConsumption(
-    currentBuilding?.uuid
+    currentBuilding?.uuid,
   );
   const [selectedTemporalAggregation] = useTemporalAggregation();
   const [selectedDateRange] = useDateRange();
@@ -31,14 +32,14 @@ export const DataValueProvider: React.FC<{
   const labels = getTimeLabels(
     fetchedData ?? [],
     selectedTemporalAggregation,
-    currentBuilding?.timezone ?? "Europe/Paris"
+    currentBuilding?.timezone ?? "Europe/Paris",
   );
 
   const basicDatasets = formatDatasets(
     fetchedData ?? [],
     selectedDateRange,
     selectedTemporalAggregation,
-    currentBuilding?.timezone ?? "Europe/Paris"
+    currentBuilding?.timezone ?? "Europe/Paris",
   );
 
   const selectableDateExtendArray = d3.extent(labels);

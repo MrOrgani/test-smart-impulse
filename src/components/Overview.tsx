@@ -1,4 +1,4 @@
-import { RawData, transposeData } from "@/lib/utils";
+import { RawData, transposeData } from "@/utils/utils";
 import React, { useMemo } from "react";
 
 import {

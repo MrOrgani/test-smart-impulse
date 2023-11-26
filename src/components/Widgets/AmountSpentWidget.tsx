@@ -1,6 +1,6 @@
 import React from "react";
 import { useDataContext } from "@/context/DataValueProvider";
-import { getValueModifier } from "@/lib/utils";
+import { getValueModifier } from "@/utils/getValueModifier";
 import { Skeleton } from "../ui/skeleton";
 
 export const AmountSpentWidget = () => {
