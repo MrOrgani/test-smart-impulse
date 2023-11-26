@@ -14,7 +14,13 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
-    "types": ["node", "jest", "vite/client", "vitest/globals"],
+    "types": [
+      "node",
+      "jest",
+      "vite/client",
+      "vitest/globals",
+      "@testing-library/jest-dom"
+    ],
 
     /* Linting */
     "strict": true,
