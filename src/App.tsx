@@ -6,7 +6,7 @@ import { Sidebar } from "./components/Sidebar";
 import { DataValueProvider } from "./context/DataValueProvider";
 import { useProjects } from "./lib/react-query/queries";
 
-function App() {
+export const App: React.FC = () => {
   const { data: buildings, isLoading } = useProjects();
   const location = useLocation();
 
@@ -22,9 +22,15 @@ function App() {
           <div className="flex flex-col xl:flex xl:flex-row">
             <Sidebar buildings={buildings ?? []} isLoading={isLoading} />
             <div className="col-span-3 xl:col-span-4 xl:border-l">
-              <div className="h-full p-2 xl:px-8">
+              <div className="xl:w-[1000px] h-full xl:h-[780px] p-2 xl:px-8">
                 {location.pathname === "/" ? (
-                  <div>To define</div>
+                  <div className="flex h-full flex-col items-center justify-center">
+                    <h1 className="text-2xl font-bold tracking-tight">
+                      Welcome,
+                      <br />
+                      please select a project (building)
+                    </h1>
+                  </div>
                 ) : (
                   <DataValueProvider>
                     <Outlet />
@@ -37,6 +43,6 @@ function App() {
       </div>
     </div>
   );
-}
+};
 
 export default App;

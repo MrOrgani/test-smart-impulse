@@ -39,7 +39,7 @@
     "start": "concurrently \"yarn run server\" \"yarn run client\"",
     "server": "node server.js",
     "client": "vite",
-    "test": "vitest"
+    "test": "vitest --environment jsdom"
   },
   "eslintConfig": {
     "extends": [
