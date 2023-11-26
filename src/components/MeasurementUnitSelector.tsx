@@ -6,13 +6,13 @@ import {
   SelectContent,
   SelectItem,
 } from "./ui/select";
-import { MeasureUnit } from "@/lib/types";
+import type { MeasureUnit } from "@/lib/types";
 import { useMeasureUnit } from "@/hooks/useMeasureUnit";
 
 const measurementUnitOptions = { MWh: "MWh", kWh: "kWh", euros: "€" };
 
 interface Props {
-  options?: [string, MeasureUnit][];
+  options?: Array<[string, MeasureUnit]>;
 }
 
 export const MeasurementUnitSelector: React.FC<Props> = ({
@@ -24,7 +24,9 @@ export const MeasurementUnitSelector: React.FC<Props> = ({
     <Select
       defaultValue={measureUnit}
       value={measureUnit}
-      onValueChange={(value: MeasureUnit) => setMeasureUnit(value)}
+      onValueChange={(value: MeasureUnit) => {
+        setMeasureUnit(value);
+      }}
     >
       <SelectTrigger
         className={
@@ -34,8 +36,8 @@ export const MeasurementUnitSelector: React.FC<Props> = ({
         <SelectValue placeholder="Select" />
       </SelectTrigger>
       <SelectContent>
-        {options.map(([label, value]) => (
-          <SelectItem key={label} value={label}>
+        {options.map(([key, value]) => (
+          <SelectItem key={key} value={key}>
             {value}
           </SelectItem>
         ))}
