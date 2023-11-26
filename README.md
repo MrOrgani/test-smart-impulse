@@ -34,45 +34,33 @@ Pour plus de détails, se reporter à la documentation [running tests](https://f
 2. Si vous n'avez pas `yarn`, suivre les [instructions d'installation de yarn](https://classic.yarnpkg.com/en/docs/install)
 3. Installez les dépendances du test métier en lançant `yarn` depuis le dossier du projet.
 4. Lancer le projet avec `yarn start`
-5. Vérifiez que tout se passe bien en ouvrant la page [http://localhost:3000](http://localhost:3000) et vérifier que son contenu correspond à l'image:
 
-![](localhost_3000.png)
+## Fonctionnalités
 
-## Objectif
+- choisir un projet (building), naviguer entre eux
+- choisir une unité de mesure (MWh, kWh, euros)
+- choisir une plage de date
+- choisir différentes d'agrégations temporelles (jour/semaine/mois/année)
+- possibilité de réinitialiser les sélecteurs.
 
-Construire une petite application React, qui doit être capable de :
-* Interroger le serveur d'API via des requêtes asynchrones (`fetch` ou similaire)
-* Naviguer parmi les projets que renvoie l'API
-* Après sélection d'un projet, tracer les données d'énergie par jour dans un graphe en barres empilées.
+Widgets:
+- Un pour voir qu'elle est la somme totale dépensée sur la période sélectionnée
+- Un pour voir qu'elle est la plus grosse dépense sur la période sélectionnée
+- La liste des catégories d'équipements avec la dépense la plus onéreuse en fonction de l'agrégation temporelle
 
-Voici un exemple de représentation de l'énergie consommée pour chaque catégorie sur chaque jour d'un mois :
+Graph (avec Chart JS)
+- les axes se mettent à jour en fonction des agrégations.
+- il est possible de zoomer sur le graphique.
+- un tooltip apparaît lorsque l'on survole la donnée. Il affiche la période temporelle correspondante, le nom de la catégorie d'équipement et sa valeur.
+- afin de vérifier les données affichées, j'ai mis la data originelle dans un Excel que vous pouvez voir ici: https://docs.google.com/spreadsheets/d/1h__ajn0ucDsoZF7_srji6-AX1LdF3DGXBvvB6glAjSA/edit#gid=0
+- Il est possible d'afficher ou non la légende
 
-![](graph_example.png)
+## Screenshots
 
-**Choisissez une librairie de graphes, et expliquez votre choix.**\
-Quelques critères importants: responsiveness, rapidité du tracé, zoom/déplacement de la période zoomée. Les pistes de la section [Pour aller plus loin](#next) donnent quelques autres critères.
+<img width="1510" alt="Capture d’écran 2023-11-26 à 22 02 45" src="https://github.com/MrOrgani/test-smart-impulse/assets/42295371/0d618dc0-87f8-488c-99a9-b7ece1dfb11a">
 
-**Choisissez une librairie d'UI** (ex : Material-UI, Ant design...) pour avoir des composants sympa pour construire l'interface.
+<img width="1509" alt="Capture d’écran 2023-11-26 à 22 03 09" src="https://github.com/MrOrgani/test-smart-impulse/assets/42295371/885613d9-8a92-43a7-bbcd-e112f6f97d0b">
 
-### <a name="next"></a>Pour aller plus loin
+<img width="1511" alt="Capture d’écran 2023-11-26 à 22 04 38" src="https://github.com/MrOrgani/test-smart-impulse/assets/42295371/8d12e68c-072e-4020-913f-8966440eea6f">
 
-Si vous souhaitez approfondir le test pour mieux montrer vos compétences, voilà quelques pistes :
 
-* affichage de la légende sur le graphe
-* sélection de la sous-période à afficher par un sélecteur de dates (certains projets durent 10 ans !)
-* permettre à l'utilisateur de choisir une visualisation différente en cumulant les données par semaine ou mois
-* affichage stylisé des axes (unités, format des dates)
-* bonne gestion du fuseau horaire pour l’affichage de données mesurées à l'autre bout du monde
-* Calcul d'informations synthétiques : énergie minimale/moyenne/maximale de chaque catégorie
-* possibilité de conversion du graphe en euros (par exemple 1 MWh = 83 €)
-* ce que vous avez envie d’expérimenter !
-
-## Documents à renvoyer
-
-Merci de nous renvoyer les documents suivants :
-* Votre code source
-* Les raisons de votre choix de librairie pour les graphes
-* Tout document qui vous semblerait utile pour décrire votre travail
-* Des copies d’écrans montrant votre résultat
-
-Merci et bon courage !
