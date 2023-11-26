@@ -3,19 +3,23 @@ import { useDataContext } from "@/context/DataValueProvider";
 import { getValueModifier } from "@/utils/getValueModifier";
 import { Skeleton } from "../ui/skeleton";
 
-export const AmountSpentWidget = () => {
+export const AmountSpentWidget: React.FC = () => {
   const { data, isLoading } = useDataContext();
+
+  if (isLoading) {
+    return <Skeleton className="w-24 h-6" />;
+  }
 
   const totalAmountSpent = data.datasets
     ?.find((dataset) => dataset.label === "Energie totale")
     ?.tooltip.reduce((acc, value) => acc + value[1], 0);
 
-  const valueModifier = getValueModifier("euros");
-  const amount = valueModifier(totalAmountSpent!).toFixed(2);
-
-  if (isLoading || !totalAmountSpent) {
-    return <Skeleton className="w-24 h-6" />;
+  if (totalAmountSpent === undefined) {
+    return null;
   }
+
+  const valueModifier = getValueModifier("euros");
+  const amount = valueModifier(totalAmountSpent).toFixed(2);
 
   return (
     <div className="grid grid-cols-2">
