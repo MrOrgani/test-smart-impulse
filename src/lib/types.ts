@@ -1,5 +1,3 @@
-import { ChartProps } from "react-chartjs-2";
-
 type EnergyConsumptionStackedLabel =
   | "Informatique et onduleurs"
   | "Moteurs triphasés sur variateurs"

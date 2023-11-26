@@ -1,14 +1,15 @@
+import React from "react";
 import { Building } from "lucide-react";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import { Link, useLocation } from "react-router-dom";
-import { IBuiding } from "@/lib/types";
+import type { IBuiding } from "@/lib/types";
 import { Skeleton } from "./ui/skeleton";
 import { useSimilarDateRange } from "@/hooks/useSimilarDateRange";
 import { SameDateRangeCheckbox } from "./SameDateRangeCheckbox";
 import { useDateRange } from "@/hooks/useDateRange";
 
-const ButtonSkeleton = () => (
+const ButtonSkeleton: React.FC = () => (
   <Skeleton className="flex items-center w-auto animate-pulse">
     <Button variant={"ghost"} className="w-full justify-start font-normal">
       <div className=" bg-slate-200 h-[24px] w-[24px] mx-1" />
@@ -61,7 +62,7 @@ export const Sidebar: React.FC<{
                 );
               })}
           </div>
-          {selectedDateRange && <SameDateRangeCheckbox />}
+          {selectedDateRange !== null && <SameDateRangeCheckbox />}
         </ScrollArea>
       </div>
     </div>

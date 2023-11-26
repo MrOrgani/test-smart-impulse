@@ -10,7 +10,7 @@ import { MostExpensiveCategoryWidget } from "./Widgets/MostExpensiveCategoryWidg
 import { useTemporalAggregation } from "@/hooks/useTemporalAggregation";
 import { MostExpensiveTemporalAggregationPerCategory } from "./Widgets/MostExpensiveTemporalAggregationPerCategory";
 
-export const Dashboard = () => {
+export const Dashboard: React.FC = () => {
   const [temporalAggregation] = useTemporalAggregation();
   return (
     <div className="">
