@@ -8,8 +8,9 @@ import {
   SelectValue,
 } from "./ui/select";
 import { useTemporalAggregation } from "@/hooks/useTemporalAggregation";
+import type { TemporalAggregations } from "@/lib/types";
 
-export const TemporalAggregationSelector = () => {
+export const TemporalAggregationSelector: React.FC = () => {
   const [selectedTemporalAggregation, setSelectedTemporalAggregation] =
     useTemporalAggregation();
   return (
@@ -20,7 +21,9 @@ export const TemporalAggregationSelector = () => {
       <Select
         defaultValue={selectedTemporalAggregation}
         value={selectedTemporalAggregation}
-        onValueChange={(value) => setSelectedTemporalAggregation(value as any)}
+        onValueChange={(value: TemporalAggregations) => {
+          setSelectedTemporalAggregation(value);
+        }}
       >
         <SelectTrigger
           id="temporalAggragtion"
