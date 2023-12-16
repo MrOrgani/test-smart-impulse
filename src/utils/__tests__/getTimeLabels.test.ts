@@ -1,4 +1,4 @@
-import type { EnergyConsumptionDatasets } from "@/lib/types";
+import type { EnergyConsumptionDataset } from "@/lib/types";
 import { getTimeLabels } from "../getTimeLabels";
 
 import dayjs from "dayjs";
@@ -14,7 +14,7 @@ dayjs.extend(dayjsTimezone);
 
 describe("getTimeLabels", () => {
   it("should return an empty array if data is empty", () => {
-    const data: EnergyConsumptionDatasets = [];
+    const data: EnergyConsumptionDataset[] = [];
     const aggregationType = "day";
     const timezone = "Europe/Paris";
 
@@ -46,7 +46,7 @@ describe("getTimeLabels", () => {
     const timezone = "Europe/Paris";
 
     const result = getTimeLabels(
-      data as EnergyConsumptionDatasets,
+      data as EnergyConsumptionDataset[],
       aggregationType,
       timezone,
     );

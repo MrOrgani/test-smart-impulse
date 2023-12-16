@@ -1,4 +1,4 @@
-import type { BasicFormattedDatasets } from "@/lib/types";
+import type { BasicFormattedDataset } from "@/lib/types";
 import { aggregateDatasets } from "../aggregateDatasets";
 
 import dayjs from "dayjs";
@@ -10,7 +10,7 @@ dayjs.extend(dayjsTimezone);
 
 describe("aggregateDatasets", () => {
   it("should return an empty array if datasets is empty", () => {
-    const datasets: BasicFormattedDatasets = [];
+    const datasets: BasicFormattedDataset[] = [];
     const aggregationType = "day";
     const timezone = "Europe/Paris";
 
@@ -51,7 +51,7 @@ describe("aggregateDatasets", () => {
           [1628006400000, 25], // 2021-08-03T16:00:00.000Z Tuesday in timestamp is 1628006400000
         ],
       },
-    ] as BasicFormattedDatasets;
+    ] as BasicFormattedDataset[];
     const aggregationType = "month";
     const timezone = "Europe/Paris";
 

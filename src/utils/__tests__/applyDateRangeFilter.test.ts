@@ -1,5 +1,5 @@
 import { applyDateRangeFilter } from "../applyDateRangeFilter";
-import type { BasicFormattedDatasets } from "@/lib/types";
+import type { BasicFormattedDataset } from "@/lib/types";
 
 describe("applyDateRangeFilter", () => {
   const datasets = [
@@ -27,7 +27,7 @@ describe("applyDateRangeFilter", () => {
         [1625270400000, 600],
       ],
     },
-  ] as BasicFormattedDatasets;
+  ] as BasicFormattedDataset[];
 
   it("should return the original datasets if dateRange is undefined", () => {
     const dateRange = undefined;

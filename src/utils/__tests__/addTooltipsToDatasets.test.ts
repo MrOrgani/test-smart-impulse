@@ -1,9 +1,9 @@
 import { addTooltipsToDatasets } from "../addTooltipsToDatasets";
-import type { EnergyConsumptionDatasets } from "@/lib/types";
+import type { EnergyConsumptionDataset } from "@/lib/types";
 
 describe("addTooltipsToDatasets", () => {
   it("should format energy consumption datasets correctly", () => {
-    const data: EnergyConsumptionDatasets = [
+    const data: EnergyConsumptionDataset[] = [
       {
         type: "total",
         label: "Energie totale",
@@ -65,7 +65,7 @@ describe("addTooltipsToDatasets", () => {
   });
 
   it("should return an empty array if the input data is empty", () => {
-    const data: EnergyConsumptionDatasets = [];
+    const data: EnergyConsumptionDataset[] = [];
 
     const result = addTooltipsToDatasets(data);
 
