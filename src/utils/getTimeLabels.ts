@@ -1,25 +1,25 @@
 import type {
-  EnergyConsumptionDatasets,
-  TemporalAggregations
-} from '../lib/types'
-import { getDataAggregatedByTimeAggregation } from './getDataAggregatedByTimeAggregation'
+  EnergyConsumptionDataset,
+  TemporalAggregations,
+} from "../lib/types";
+import { getDataAggregatedByTimeAggregation } from "./getDataAggregatedByTimeAggregation";
 
 export const getTimeLabels = (
-  data: EnergyConsumptionDatasets,
+  data: EnergyConsumptionDataset[],
   aggregationType: TemporalAggregations,
-  timezone: string
+  timezone: string,
 ): string[] => {
-  if (data.length < 1) return []
+  if (data.length < 1) return [];
   // Get index values from the longest dataset
   const longestDataset = data.reduce((acc, item) => {
-    return item.data.length > acc.data.length ? item : acc
-  }, data[0])
+    return item.data.length > acc.data.length ? item : acc;
+  }, data[0]);
 
   const aggregatedTimestamps = getDataAggregatedByTimeAggregation(
     longestDataset.data,
     aggregationType,
-    timezone
-  ).keys()
+    timezone,
+  ).keys();
 
-  return [...aggregatedTimestamps]
-}
+  return [...aggregatedTimestamps];
+};
