@@ -1,10 +1,10 @@
-import type { BasicFormattedDatasets } from "../lib/types";
+import type { BasicFormattedDataset } from "../lib/types";
 import type { DateRange } from "react-day-picker";
 
 export const applyDateRangeFilter = (
-  datasets: BasicFormattedDatasets,
+  datasets: BasicFormattedDataset[],
   dateRange: DateRange | undefined,
-): BasicFormattedDatasets => {
+): BasicFormattedDataset[] => {
   if (dateRange?.from === undefined || dateRange?.to === undefined) {
     return datasets;
   }
