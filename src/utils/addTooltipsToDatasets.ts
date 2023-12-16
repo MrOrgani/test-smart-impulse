@@ -1,13 +1,12 @@
 import type {
-  EnergyConsumptionDatasets,
   EnergyConsumptionDataset,
-  BasicFormattedDatasets,
+  BasicFormattedDataset,
 } from "../lib/types";
 
 export const addTooltipsToDatasets = (
-  data: EnergyConsumptionDatasets,
-): BasicFormattedDatasets => {
-  if (data.length < 1) return [];
+  data: EnergyConsumptionDataset[],
+): BasicFormattedDataset[] => {
+  if (!data?.length) return [];
 
   const basicDatasets = data
     .map((item: EnergyConsumptionDataset) => {
