@@ -1,14 +1,11 @@
-import type {
-  BasicFormattedDatasets,
-  TemporalAggregations,
-} from "../lib/types";
+import type { BasicFormattedDataset, TemporalAggregations } from "../lib/types";
 import { getDataAggregatedByTimeAggregation } from "./getDataAggregatedByTimeAggregation";
 
 export const aggregateDatasets = (
-  datasets: BasicFormattedDatasets,
+  datasets: BasicFormattedDataset[],
   aggregationType: TemporalAggregations,
   timezone: string,
-): BasicFormattedDatasets => {
+): BasicFormattedDataset[] => {
   if (datasets.length < 1) return [];
 
   const aggregatedDatasets = datasets.map((dataset) => {
