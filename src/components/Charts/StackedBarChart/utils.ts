@@ -1,15 +1,15 @@
-import type { ArrayElement, BasicFormattedDatasets } from "@/lib/types";
+import type { ArrayElement, BasicFormattedDataset } from "@/lib/types";
 import type { ChartProps } from "react-chartjs-2";
 
 export const stackedBarChartFormatter = (
-  datasets: BasicFormattedDatasets,
+  datasets: BasicFormattedDataset[],
   valueModifier: (value: number, MWhPrice?: number) => number,
 ): Array<
   ArrayElement<
     ChartProps<"bar", number[]>["data"]["datasets"] & { tooltip: number[] }
   >
 > => {
-  if (datasets.length < 1) return [];
+  if (!datasets?.length) return [];
 
   const formattedDatasets = datasets.map((dataset) => {
     const formattedValues = dataset.data.map((datum) => {
