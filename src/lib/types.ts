@@ -38,12 +38,17 @@ type FetchedDataSet = {
     }
 );
 
-export type EnergyConsumptionDatasets = FetchedDataSet[];
+export type IFetchedEnergyConsumptionDataset = {
+  buildingId: string;
+  datasets: FetchedDataSet[];
+};
 
 export type ArrayElement<ArrayType extends readonly unknown[]> =
   ArrayType extends ReadonlyArray<infer ElementType> ? ElementType : never;
 
-export type EnergyConsumptionDataset = ArrayElement<EnergyConsumptionDatasets>;
+export type EnergyConsumptionDataset = ArrayElement<
+  IFetchedEnergyConsumptionDataset["datasets"]
+>;
 
 export interface IBuilding {
   name: string;
@@ -64,10 +69,10 @@ export type MeasureUnitLabels = {
   [key in MeasureUnit]: string;
 };
 
-export type BasicFormattedDatasets = Array<{
+export type BasicFormattedDataset = {
   datasetType: EnergyConsumptionDataset["type"];
   data: EnergyConsumptionDataset["data"];
   tooltip: EnergyConsumptionDataset["data"];
   label: EnergyConsumptionDataset["label"];
   backgroundColor: EnergyConsumptionDataset["color"];
-}>;
+};
