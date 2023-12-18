@@ -1,17 +1,22 @@
-import React from "react";
-import { useDataContext } from "@/context/DataValueProvider";
-import { getValueModifier } from "@/utils/getValueModifier";
-import { Skeleton } from "../ui/skeleton";
+import React from 'react';
+import { useDataContext } from '@/context/DataValueProvider';
+import { getValueModifier } from '@/utils/getValueModifier';
+import { Skeleton } from '../ui/skeleton';
 
 export const MostExpensiveCategoryWidget = () => {
   const { data, isLoading } = useDataContext();
 
   if (isLoading) {
-    return <Skeleton className="w-24 h-6" />;
+    return (
+      <div className="grid grid-cols-2">
+        <Skeleton className="w-24 h-6" />
+        <Skeleton className="ml-auto w-24 h-6" />
+      </div>
+    );
   }
 
-  const reducedDataCategories = data.datasets
-    .filter((dataset) => dataset.label !== "Energie totale")
+  const reducedDataCategories = data
+    .filter((dataset) => dataset.label !== 'Energie totale')
     ?.map((dataset) => ({
       ...dataset,
       data: dataset.data?.reduce((acc, value) => acc + value[1], 0),
@@ -19,11 +24,8 @@ export const MostExpensiveCategoryWidget = () => {
     .sort((a, b) => b.data - a.data);
 
   const mostExpensiveCategory = reducedDataCategories[0];
-  if (isLoading || !mostExpensiveCategory?.data) {
-    return <Skeleton className="w-24 h-6" />;
-  }
-  const amount = getValueModifier("euros")(
-    mostExpensiveCategory?.data!,
+  const amount = getValueModifier('euros')(
+    mostExpensiveCategory?.data ?? 0,
   ).toFixed(2);
 
   return (
@@ -31,10 +33,10 @@ export const MostExpensiveCategoryWidget = () => {
       <span
         className={`text-xs font-semibold underline  `}
         style={{
-          textDecorationColor: mostExpensiveCategory.backgroundColor,
+          textDecorationColor: mostExpensiveCategory?.color ?? '',
         }}
       >
-        {mostExpensiveCategory.label}
+        {mostExpensiveCategory?.label ?? 'No category'}
       </span>
       <span className="text-md font-semibold text-end"> € {amount}</span>
     </div>
