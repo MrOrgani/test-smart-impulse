@@ -1,36 +1,45 @@
-import type { ArrayElement, BasicFormattedDataset } from "@/lib/types";
-import type { ChartProps } from "react-chartjs-2";
+import type { BasicFormattedDataset, FetchedDataSet } from '@/lib/types';
+
+interface IStackedBarChartDataset {
+  datasetType: FetchedDataSet['type'];
+  label: string;
+  backgroundColor: string;
+  data: number[];
+  tooltip: number[];
+}
 
 export const stackedBarChartFormatter = (
   datasets: BasicFormattedDataset[],
   valueModifier: (value: number, MWhPrice?: number) => number,
-): Array<
-  ArrayElement<
-    ChartProps<"bar", number[]>["data"]["datasets"] & { tooltip: number[] }
-  >
-> => {
+): Array<IStackedBarChartDataset> => {
   if (!datasets?.length) return [];
+  const formattedDatasets: Array<IStackedBarChartDataset> = [];
 
-  const formattedDatasets = datasets.map((dataset) => {
-    const formattedValues = dataset.data.map((datum) => {
-      if (!Array.isArray(datum)) return datum;
-      const value = datum[1];
-      return dataset.datasetType === "total"
-        ? valueModifier(value) / 100
-        : valueModifier(value);
-    });
-    const formattedtooltips = dataset.tooltip?.map((datum) => {
-      if (!Array.isArray(datum)) return datum;
-      const value = datum[1];
-      return valueModifier(value);
-    });
-
-    return {
-      ...dataset,
-      data: formattedValues,
-      tooltip: formattedtooltips,
+  for (let datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
+    const formattedDataset: IStackedBarChartDataset = {
+      datasetType: datasets[datasetIndex].datasetType,
+      backgroundColor: datasets[datasetIndex].backgroundColor,
+      label: datasets[datasetIndex].label,
+      data: [],
+      tooltip: [],
     };
-  });
+
+    for (
+      let datumIndex = 0;
+      datumIndex < datasets[datasetIndex].data.length;
+      datumIndex++
+    ) {
+      const [, value] = datasets[datasetIndex].data[datumIndex];
+
+      formattedDataset.data.push(
+        formattedDataset.datasetType === 'total'
+          ? valueModifier(value) / 100
+          : valueModifier(value),
+      );
+      formattedDataset.tooltip.push(valueModifier(value));
+    }
+    formattedDatasets.push(formattedDataset);
+  }
 
   return formattedDatasets;
 };
