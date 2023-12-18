@@ -1,11 +1,8 @@
-import type {
-  EnergyConsumptionDataset,
-  TemporalAggregations,
-} from "../lib/types";
-import { getDataAggregatedByTimeAggregation } from "./getDataAggregatedByTimeAggregation";
+import type { BasicFormattedDataset, TemporalAggregations } from '../lib/types';
+import { getDataAggregatedByTimeAggregation } from './getDataAggregatedByTimeAggregation';
 
 export const getTimeLabels = (
-  data: EnergyConsumptionDataset[],
+  data: BasicFormattedDataset[],
   aggregationType: TemporalAggregations,
   timezone: string,
 ): string[] => {
