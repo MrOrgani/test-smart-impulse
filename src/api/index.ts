@@ -5,14 +5,14 @@ export const getBuildings = async () => {
 };
 
 export const getEneryConsumptionByBuildingId = async (
-  buildingId: string | undefined
+  buildingId: string | undefined,
 ) => {
   if (!buildingId) {
     return [];
   }
   const res = await fetch(
-    `${import.meta.env.VITE_SERVER_URL}/api/energy?uuid=${buildingId}`
+    `${import.meta.env.VITE_SERVER_URL}/api/energy?uuid=${buildingId}`,
   );
-  const data = await res.json();
-  return data;
+  const datasets = await res.json();
+  return datasets;
 };
