@@ -1,8 +1,9 @@
 import React from 'react';
-import { useProjects } from '@/lib/react-query/queries';
 import dayjs from 'dayjs';
 import type { DateRange } from 'react-day-picker';
 import { useSearchParams } from 'react-router-dom';
+
+import { useProjects } from '@/lib/react-query/queries';
 
 export const useDateRange = (): readonly [
   string | undefined,
