@@ -1,17 +1,15 @@
-import React from "react";
-import { Card, CardContent, CardTitle } from "./ui/card";
-import { StackedBarChart } from "./charts/StackedBarChart/StackedBarChart";
-import { DateSelector } from "./DateSelector";
-import { TemporalAggregationSelector } from "./TemporalAggregationSelector";
-import { ResetButton } from "./ResetButton";
-import { MeasurementUnitSelector } from "./MeasurementUnitSelector";
-import { AmountSpentWidget } from "./widgets/AmountSpentWidget";
-import { MostExpensiveCategoryWidget } from "./widgets/MostExpensiveCategoryWidget";
-import { useTemporalAggregation } from "@/hooks/useTemporalAggregation";
-import { MostExpensiveTemporalAggregationPerCategory } from "./widgets/MostExpensiveTemporalAggregationPerCategory";
+import React from 'react';
+import { Card, CardContent, CardTitle } from './ui/card';
+import { StackedBarChart } from './charts/StackedBarChart/StackedBarChart';
+import { DateSelector } from './DateSelector';
+import { TemporalAggregationSelector } from './TemporalAggregationSelector';
+import { ResetButton } from './ResetButton';
+import { MeasurementUnitSelector } from './MeasurementUnitSelector';
+import { AmountSpentWidget } from './widgets/AmountSpentWidget';
+import { MostExpensiveCategoryWidget } from './widgets/MostExpensiveCategoryWidget';
+import { MostExpensiveTemporalAggregationPerCategory } from './widgets/MostExpensiveTemporalAggregationPerCategory';
 
 export const Dashboard: React.FC = () => {
-  const [temporalAggregation] = useTemporalAggregation();
   return (
     <div className="">
       <div className="flex flex-col items-center gap-2 lg:flex-row my-2">
@@ -44,13 +42,10 @@ export const Dashboard: React.FC = () => {
           <Card></Card>
         </div>
         <Card className="flex flex-col p-2">
-          <CardTitle className="items-baseline text-xs text-gray-500">
-            Most expensive {temporalAggregation} per category
-          </CardTitle>
           <MostExpensiveTemporalAggregationPerCategory />
         </Card>
       </div>
-      <div className={" overflow-scroll"}>
+      <div className={' overflow-scroll'}>
         <StackedBarChart />
       </div>
     </div>
