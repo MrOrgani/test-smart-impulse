@@ -1,29 +1,26 @@
-import React from "react";
-import { useProjects } from "@/lib/react-query/queries";
-import dayjs from "dayjs";
-import type { DateRange } from "react-day-picker";
-import { useSearchParams } from "react-router-dom";
+import React from 'react';
+import { useProjects } from '@/lib/react-query/queries';
+import dayjs from 'dayjs';
+import type { DateRange } from 'react-day-picker';
+import { useSearchParams } from 'react-router-dom';
 
 export const useDateRange = (): readonly [
-  DateRange | undefined,
-  (selectedDateRange: DateRange) => void,
+  string | undefined,
+  (selectedDateRange: DateRange | undefined) => void,
 ] => {
   const [params, setURLSearchParams] = useSearchParams();
   const { currentBuilding } = useProjects();
 
-  const dateRangeFromUrl = params
-    .get("dateRange")
-    ?.split("_")
-    .map((d) =>
-      dayjs(d)
-        .tz(currentBuilding?.timezone)
-        .toDate(),
-    );
-
-  const dateRange =
-    dateRangeFromUrl?.every((d) => dayjs(d).isValid()) ?? false
-      ? { from: dateRangeFromUrl?.[0], to: dateRangeFromUrl?.[1] }
-      : undefined;
+  const [from, to] =
+    params
+      .get('dateRange')
+      ?.split('_')
+      .filter((d) => dayjs(d).isValid())
+      .map((d) =>
+        dayjs(d)
+          .tz(currentBuilding?.timezone)
+          .toISOString(),
+      ) ?? [];
 
   const setDateRangeFilter = (
     selectedDateRange: DateRange | undefined,
@@ -41,10 +38,13 @@ export const useDateRange = (): readonly [
       ...searchAsObject,
       dateRange: encodeURI(
         `${
-          selectedDateRange?.from?.toISOString() ?? ""
-        }_${selectedDateRange?.to?.toISOString()}`,
+          selectedDateRange.from.toISOString() ?? ''
+        }_${selectedDateRange.to.toISOString()}`,
       ),
     });
   };
-  return [dateRange, setDateRangeFilter] as const;
+
+  const selectedDateRange = from && to ? `${from}_${to}` : undefined;
+
+  return [selectedDateRange, setDateRangeFilter] as const;
 };
