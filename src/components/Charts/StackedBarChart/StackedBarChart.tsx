@@ -1,21 +1,23 @@
-import { useDataContext } from '@/context/DataValueProvider';
-import { Chart as ChartJS, registerables } from 'chart.js';
-import type { TooltipItem } from 'chart.js';
-import { Chart } from 'react-chartjs-2';
-import type { ChartProps } from 'react-chartjs-2';
-import zoomPlugin from 'chartjs-plugin-zoom';
-import { useProjects } from '@/lib/react-query/queries';
-import { Skeleton } from '../../ui/skeleton';
-import { useTemporalAggregation } from '@/hooks/useTemporalAggregation';
-import { useMeasureUnit } from '@/hooks/useMeasureUnit';
-import { formatDate } from '@/utils/formatDate';
-import { getValueModifier } from '@/utils/getValueModifier';
-import { stackedBarChartFormatter } from './utils';
 import React from 'react';
+import type { TooltipItem } from 'chart.js';
+import { Chart as ChartJS, registerables } from 'chart.js';
+import zoomPlugin from 'chartjs-plugin-zoom';
+import type { ChartProps } from 'react-chartjs-2';
+import { Chart } from 'react-chartjs-2';
+
 import { Button } from '@/components/ui/button';
-import type { ArrayElement } from '@/lib/types';
-import { getTimeLabels } from '@/utils/getTimeLabels';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useDataContext } from '@/context/DataValueProvider';
 import useDataFormatterWebWorker from '@/hooks/useDataFormatterWebWorker';
+import { useMeasureUnit } from '@/hooks/useMeasureUnit';
+import { useTemporalAggregation } from '@/hooks/useTemporalAggregation';
+import { useProjects } from '@/lib/react-query/queries';
+import type { ArrayElement } from '@/lib/types';
+import { formatDate } from '@/utils/formatDate';
+import { getTimeLabels } from '@/utils/getTimeLabels';
+import { getValueModifier } from '@/utils/getValueModifier';
+
+import { stackedBarChartFormatter } from './utils';
 
 ChartJS.register(...registerables, zoomPlugin);
 
