@@ -1,32 +1,32 @@
-import type {
-  EnergyConsumptionDataset,
-  BasicFormattedDataset,
-} from "../lib/types";
+import type { BasicFormattedDataset, FetchedDataSet } from '../lib/types';
 
 export const addTooltipsToDatasets = (
-  data: EnergyConsumptionDataset[],
+  data: FetchedDataSet[],
 ): BasicFormattedDataset[] => {
   if (!data?.length) return [];
+  const localData = data;
+  localData.sort((a) => {
+    return a.type === 'total' ? 1 : -1;
+  });
+  const datasets = [];
 
-  const basicDatasets = data
-    .map((item: EnergyConsumptionDataset) => {
-      return {
-        datasetType: item.type,
-        label: item.label,
-        backgroundColor: item.color,
-        data: item.data.map<[number, number]>(([timestamp, value]) => [
-          timestamp,
-          value,
-        ]),
-        tooltip: item.data.map<[number, number]>(([timestamp, value]) => [
-          timestamp,
-          value,
-        ]),
-      };
-    })
-    .sort((a) => {
-      return a.datasetType === "total" ? 1 : -1;
-    });
+  for (let datasetIndex = 0; datasetIndex < localData.length; datasetIndex++) {
+    const { type, label, color, data: itemData } = localData[datasetIndex];
+    const formattedData = [];
 
-  return basicDatasets;
+    for (let datumIndex = 0; datumIndex < itemData.length; datumIndex++) {
+      formattedData.push(itemData[datumIndex]);
+    }
+
+    const dataset = {
+      datasetType: type,
+      label,
+      backgroundColor: color,
+      data: formattedData,
+      tooltip: formattedData,
+    };
+    datasets.push(dataset);
+  }
+
+  return datasets;
 };
