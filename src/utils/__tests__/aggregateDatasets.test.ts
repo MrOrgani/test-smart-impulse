@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import dayjsTimezone from 'dayjs/plugin/timezone';
 import dayjsUtc from 'dayjs/plugin/utc';
 
-import type { BasicFormattedDataset } from '@/lib/types';
+import type { AggregatedDataset } from '@/lib/types';
 
 import { aggregateDatasets } from '../aggregateDatasets';
 
@@ -11,7 +11,7 @@ dayjs.extend(dayjsTimezone);
 
 describe('aggregateDatasets', () => {
   it('should return an empty array if datasets is empty', () => {
-    const datasets: BasicFormattedDataset[] = [];
+    const datasets: AggregatedDataset[] = [];
     const aggregationType = 'day';
     const timezone = 'Europe/Paris';
 
@@ -23,9 +23,9 @@ describe('aggregateDatasets', () => {
   it('should aggregate the data and tooltips correctly', () => {
     const datasets = [
       {
-        datasetType: 'total',
+        type: 'total',
         label: 'Energie totale',
-        backgroundColor: '#FF0000',
+        color: '#FF0000',
         data: [
           [1627833600000, 10], // 2021-08-01T16:00:00.000Z Sunday
           [1627920000000, 20], // 2021-08-02T16:00:00.000Z Monday in timestamp is 1627920000000
@@ -33,16 +33,16 @@ describe('aggregateDatasets', () => {
         ],
       },
       {
-        datasetType: 'element',
+        type: 'element',
         label: 'Autres éclairages',
-        backgroundColor: '#FF0000',
+        color: '#FF0000',
         data: [
           [1627833600000, 5], // 2021-08-01T16:00:00.000Z Sunday
           [1627920000000, 15], // 2021-08-02T16:00:00.000Z Monday in timestamp is 1627920000000
           [1628006400000, 25], // 2021-08-03T16:00:00.000Z Tuesday in timestamp is 1628006400000
         ],
       },
-    ] as BasicFormattedDataset[];
+    ] as AggregatedDataset[];
     const aggregationType = 'month';
     const timezone = 'Europe/Paris';
 
@@ -50,16 +50,16 @@ describe('aggregateDatasets', () => {
 
     expect(result).toEqual([
       {
-        datasetType: 'total',
+        type: 'total',
         label: 'Energie totale',
-        backgroundColor: '#FF0000',
+        color: '#FF0000',
         data: [['2021-07-31T22:00:00.000Z', 60]],
       },
       {
-        backgroundColor: '#FF0000',
+        color: '#FF0000',
         label: 'Autres éclairages',
         data: [['2021-07-31T22:00:00.000Z', 45]],
-        datasetType: 'element',
+        type: 'element',
       },
     ]);
   });

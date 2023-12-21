@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { DateRange } from 'react-day-picker';
 
 import { useProjects } from '@/lib/react-query/queries';
-import { FetchedDataSet } from '@/lib/types';
+import { FetchedDataset } from '@/lib/types';
 import { IWorkerRequest, IWorkerResult } from '@/utils/formatScript';
 import { getExtendedDateFromDatasets } from '@/utils/getExtendedDateFromDatasets';
 
@@ -11,7 +11,7 @@ import { useTemporalAggregation } from './useTemporalAggregation';
 import { useWebWorker } from './useWebWorker';
 
 interface IProps {
-  fetchedData: FetchedDataSet[];
+  fetchedData: FetchedDataset[];
 }
 
 const workerInstance = new Worker(

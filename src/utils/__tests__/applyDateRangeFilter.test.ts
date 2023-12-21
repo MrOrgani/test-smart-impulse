@@ -1,4 +1,4 @@
-import type { BasicFormattedDataset } from '@/lib/types';
+import type { FetchedDataset } from '@/lib/types';
 
 import { applyDateRangeFilter } from '../applyDateRangeFilter';
 
@@ -18,7 +18,7 @@ describe('applyDateRangeFilter', () => {
         [1625270400000, 60], // 2021-07-03T16:00:00.000Z Saturday
       ],
     },
-  ] as BasicFormattedDataset[];
+  ] as FetchedDataset[];
 
   it('should return the original datasets if dateRange is undefined', () => {
     const dateRange = undefined;

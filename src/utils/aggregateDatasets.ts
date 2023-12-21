@@ -1,13 +1,13 @@
 import type {
   AggregatedDataset,
-  BasicFormattedDataset,
+  FetchedDataset,
   TemporalAggregations,
 } from '../lib/types';
 
 import { getTimeAggregation } from './getTimeAggregation';
 
 export const aggregateDatasets = (
-  datasets: BasicFormattedDataset[],
+  datasets: FetchedDataset[],
   aggregationType: TemporalAggregations,
   timezone: string,
 ): AggregatedDataset[] => {
@@ -15,10 +15,8 @@ export const aggregateDatasets = (
 
   for (let i = 0; i < datasets.length; i++) {
     const dataset: AggregatedDataset = {
-      label: datasets[i].label,
-      backgroundColor: datasets[i].backgroundColor,
+      ...datasets[i],
       data: [],
-      datasetType: datasets[i].datasetType,
     };
 
     const reduceDataMap: Record<string, number> = {};

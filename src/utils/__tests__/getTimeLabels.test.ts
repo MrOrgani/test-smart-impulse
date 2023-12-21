@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import dayjsTimezone from 'dayjs/plugin/timezone';
 import dayjsUtc from 'dayjs/plugin/utc';
 
-import type { BasicFormattedDataset } from '@/lib/types';
+import type { FetchedDataset } from '@/lib/types';
 
 import { getTimeLabels } from '../getTimeLabels';
 
@@ -15,7 +15,7 @@ dayjs.extend(dayjsTimezone);
 
 describe('getTimeLabels', () => {
   it('should return an empty array if data is empty', () => {
-    const data: BasicFormattedDataset[] = [];
+    const data: FetchedDataset[] = [];
     const aggregationType = 'day';
     const timezone = 'Europe/Paris';
 
@@ -47,7 +47,7 @@ describe('getTimeLabels', () => {
     const timezone = 'Europe/Paris';
 
     const result = getTimeLabels(
-      data as BasicFormattedDataset[],
+      data as FetchedDataset[],
       aggregationType,
       timezone,
     );

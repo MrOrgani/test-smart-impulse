@@ -1,8 +1,8 @@
 import * as d3 from 'd3';
 
-import { FetchedDataSet } from '@/lib/types';
+import { FetchedDataset } from '@/lib/types';
 
-export const getExtendedDateFromDatasets = (datasets: FetchedDataSet[]) => {
+export const getExtendedDateFromDatasets = (datasets: FetchedDataset[]) => {
   const longestDataArray = datasets.reduce((acc, curr) => {
     return curr.data.length > acc.data.length ? curr : acc;
   }, datasets[0]);

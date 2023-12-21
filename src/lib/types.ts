@@ -20,7 +20,7 @@ type EnergyConsumptionElementLabel =
   | 'Éclairage sur ballast électronique'
   | 'Lampes fluocompactes';
 
-export type FetchedDataSet = {
+export type FetchedDataset = {
   color: string;
   data: Array<[EpochTimeStamp, number]>;
 } & (
@@ -59,17 +59,6 @@ export type MeasureUnit = 'MWh' | 'kWh' | 'euros';
 export type MeasureUnitLabels = {
   [key in MeasureUnit]: string;
 };
-
-export type BasicFormattedDataset = {
-  datasetType: FetchedDataSet['type'];
-  data: FetchedDataSet['data'];
-  label: FetchedDataSet['label'];
-  backgroundColor: FetchedDataSet['color'];
-};
-
-export type AggregatedDataset = {
-  datasetType: FetchedDataSet['type'];
+export type AggregatedDataset = Omit<FetchedDataset, 'data'> & {
   data: [string, number][];
-  label: FetchedDataSet['label'];
-  backgroundColor: FetchedDataSet['color'];
 };

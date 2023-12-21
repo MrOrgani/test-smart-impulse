@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 
 import { useEnergyConsumption, useProjects } from '@/lib/react-query/queries';
-import type { FetchedDataSet } from '@/lib/types';
+import type { FetchedDataset } from '@/lib/types';
 
 const DataContext = React.createContext<{
-  data: FetchedDataSet[];
+  data: FetchedDataset[];
   isLoading: boolean;
   isFetching: boolean;
 }>({

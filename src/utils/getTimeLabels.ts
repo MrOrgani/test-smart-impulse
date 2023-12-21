@@ -1,9 +1,9 @@
-import type { BasicFormattedDataset, TemporalAggregations } from '../lib/types';
+import type { FetchedDataset, TemporalAggregations } from '../lib/types';
 
 import { getTimeAggregation } from './getTimeAggregation';
 
 export const getTimeLabels = (
-  data: BasicFormattedDataset[],
+  data: FetchedDataset[],
   aggregationType: TemporalAggregations,
   timezone: string,
 ): string[] => {

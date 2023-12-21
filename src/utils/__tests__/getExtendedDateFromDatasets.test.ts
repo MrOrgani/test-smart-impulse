@@ -1,4 +1,4 @@
-import { FetchedDataSet } from '@/lib/types';
+import { FetchedDataset } from '@/lib/types';
 
 import { getExtendedDateFromDatasets } from '../getExtendedDateFromDatasets';
 
@@ -22,7 +22,7 @@ describe('getExtendedDateFromDatasets', () => {
     ];
 
     const [selectableFrom, selectableTo] = getExtendedDateFromDatasets(
-      datasets as FetchedDataSet[],
+      datasets as FetchedDataset[],
     );
 
     expect(selectableFrom).toBe(1);
@@ -30,7 +30,7 @@ describe('getExtendedDateFromDatasets', () => {
   });
 
   it('should return undefined for selectableFrom and selectableTo if datasets is empty', () => {
-    const datasets: FetchedDataSet[] = [];
+    const datasets: FetchedDataset[] = [];
 
     const [selectableFrom, selectableTo] =
       getExtendedDateFromDatasets(datasets);
