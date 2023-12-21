@@ -39,7 +39,7 @@ export const StackedBarChart: React.FC = () => {
     valueModifier,
   );
 
-  const labels = datasets?.[0]?.data.map((d) => d[0]) ?? [];
+  const labels = aggregatedDatasets?.[0]?.data.map((d) => d[0]) ?? [];
 
   const [showLegend, setShowLegend] = React.useState(false);
 
