@@ -3,7 +3,6 @@ import { DateRange } from 'react-day-picker';
 import { AggregatedDataset, FetchedDataset } from '@/lib/types';
 
 import { aggregateDatasets } from './aggregateDatasets';
-import { applyDateRangeFilter } from './applyDateRangeFilter';
 
 export type IWorkerResult = {
   aggregatedDatasets: AggregatedDataset[];
@@ -22,10 +21,10 @@ onmessage = (e) => {
   const { datasets, temporalAggregation, timezone, buildingId, dateRange } =
     e.data;
 
-  const timeFilteredDatasets = applyDateRangeFilter(datasets, dateRange);
   const aggregatedDatasets = aggregateDatasets(
-    timeFilteredDatasets,
+    datasets,
     temporalAggregation,
+    dateRange,
     timezone,
   );
 
