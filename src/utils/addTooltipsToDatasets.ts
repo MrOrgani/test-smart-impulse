@@ -23,7 +23,6 @@ export const addTooltipsToDatasets = (
       label,
       backgroundColor: color,
       data: formattedData,
-      tooltip: formattedData,
     };
     datasets.push(dataset);
   }

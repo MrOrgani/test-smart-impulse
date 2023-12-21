@@ -1,61 +1,44 @@
-import type { BasicFormattedDataset, TemporalAggregations } from "../lib/types";
-import { getDataAggregatedByTimeAggregation } from "./getDataAggregatedByTimeAggregation";
+import type {
+  AggregatedDataset,
+  BasicFormattedDataset,
+  TemporalAggregations,
+} from '../lib/types';
+
+import { getTimeAggregation } from './getTimeAggregation';
 
 export const aggregateDatasets = (
   datasets: BasicFormattedDataset[],
   aggregationType: TemporalAggregations,
   timezone: string,
-): BasicFormattedDataset[] => {
-  if (datasets.length < 1) return [];
+): AggregatedDataset[] => {
+  const aggregatedDatasets = [];
 
-  const aggregatedDatasets = datasets.map((dataset) => {
-    // aggregate the data by the aggregation type
-    const dataAggregatedByTimeAggregation = getDataAggregatedByTimeAggregation(
-      dataset.data,
-      aggregationType,
-      timezone,
-    ).entries();
-    // reduce the aggregated and summ the values
-    const reduceDataMap = [...dataAggregatedByTimeAggregation]
-      .reduce((acc, item) => {
-        if (!Array.isArray(item)) return acc;
-        const timestamp = item[0];
-        const value = item[1];
+  for (let i = 0; i < datasets.length; i++) {
+    const dataset: AggregatedDataset = {
+      label: datasets[i].label,
+      backgroundColor: datasets[i].backgroundColor,
+      data: [],
+      datasetType: datasets[i].datasetType,
+    };
 
-        return acc.set(
-          timestamp,
-          acc.has(timestamp) ? acc.get(timestamp) + value : value,
-        );
-      }, new Map())
-      .entries();
+    const reduceDataMap: Record<string, number> = {};
 
-    // aggregate the tooltips by the aggregation type
-    const tooltipsAggregatedByTimeAggregation =
-      getDataAggregatedByTimeAggregation(
-        dataset.tooltip,
+    for (let j = 0; j < datasets[i].data.length; j++) {
+      const [timestamp, value] = datasets[i].data[j];
+      const timestampByTimeAggregation: string = getTimeAggregation(
+        timestamp,
         aggregationType,
         timezone,
-      ).entries();
+      );
+      reduceDataMap[timestampByTimeAggregation] = reduceDataMap[
+        timestampByTimeAggregation
+      ]
+        ? reduceDataMap[timestampByTimeAggregation] + value
+        : value;
+    }
+    dataset.data = Object.entries(reduceDataMap);
 
-    const reduceTooltipMap = [...tooltipsAggregatedByTimeAggregation]
-      .reduce((acc, item) => {
-        if (!Array.isArray(item)) return acc;
-        const timestamp = item[0];
-        const value = item[1];
-
-        return acc.set(
-          timestamp,
-          acc.has(timestamp) ? acc.get(timestamp) + value : value,
-        );
-      }, new Map())
-      .entries();
-
-    return {
-      ...dataset,
-      data: [...reduceDataMap],
-      tooltip: [...reduceTooltipMap],
-    };
-  });
-
+    aggregatedDatasets.push(dataset);
+  }
   return aggregatedDatasets;
 };

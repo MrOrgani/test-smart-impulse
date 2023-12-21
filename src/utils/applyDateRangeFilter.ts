@@ -4,7 +4,7 @@ import type { BasicFormattedDataset } from '../lib/types';
 
 export const applyDateRangeFilter = (
   datasets: BasicFormattedDataset[],
-  dateRange: DateRange,
+  dateRange: DateRange | undefined,
 ) => {
   if (dateRange?.from === undefined || dateRange?.to === undefined) {
     return datasets;
@@ -23,7 +23,6 @@ export const applyDateRangeFilter = (
       const item = dataset.data[j];
       if (!Array.isArray(item)) {
         dataset['data'][j] = [0, 0];
-        dataset['tooltip'][j] = [0, 0];
         continue;
       }
       const timestamp = item[0];
@@ -34,7 +33,6 @@ export const applyDateRangeFilter = (
         continue;
       } else {
         dataset['data'][j] = [timestamp, 0];
-        dataset['tooltip'][j] = [timestamp, 0];
       }
     }
 

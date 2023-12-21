@@ -63,7 +63,13 @@ export type MeasureUnitLabels = {
 export type BasicFormattedDataset = {
   datasetType: FetchedDataSet['type'];
   data: FetchedDataSet['data'];
-  tooltip: FetchedDataSet['data'];
+  label: FetchedDataSet['label'];
+  backgroundColor: FetchedDataSet['color'];
+};
+
+export type AggregatedDataset = {
+  datasetType: FetchedDataSet['type'];
+  data: [string, number][];
   label: FetchedDataSet['label'];
   backgroundColor: FetchedDataSet['color'];
 };
