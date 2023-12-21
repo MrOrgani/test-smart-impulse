@@ -1,6 +1,8 @@
 import React from 'react';
+
 import { useDataContext } from '@/context/DataValueProvider';
 import { getValueModifier } from '@/utils/getValueModifier';
+
 import { Skeleton } from '../ui/skeleton';
 
 export const MostExpensiveCategoryWidget = () => {
