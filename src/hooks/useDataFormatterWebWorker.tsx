@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from 'react';
-import { DateRange } from 'react-day-picker';
 
 import { useEnergyConsumption, useProjects } from '@/lib/react-query/queries';
 import { IWorkerRequest, IWorkerResult } from '@/utils/formatScript';
-import { getExtendedDateFromDatasets } from '@/utils/getExtendedDateFromDatasets';
+
+import { getDateRange } from '../utils/getDateRange';
 
 import { useDateRange } from './useDateRange';
 import { useTemporalAggregation } from './useTemporalAggregation';
@@ -17,41 +17,30 @@ const useDataFormatterWebWorker = () => {
       }),
     [],
   );
-  const { currentBuilding } = useProjects();
-
-  const { data: datasets, isLoading } = useEnergyConsumption(
-    currentBuilding?.uuid,
-  );
-
-  const [selectedTemporalAggregation] = useTemporalAggregation();
-  const [selectedDateRange] = useDateRange();
-
   const {
     result: { aggregatedDatasets, buildingId: currentDataBuildingId } = {},
     startProcessing,
   } = useWebWorker<IWorkerResult, IWorkerRequest>(workerInstance);
 
+  const { currentBuilding } = useProjects();
+
+  const { data: datasets, isLoading } = useEnergyConsumption(
+    currentBuilding?.uuid,
+  );
+  const [selectedTemporalAggregation] = useTemporalAggregation();
+  const [selectedDateRange] = useDateRange();
+
+  const dateRange = useMemo(
+    () => getDateRange({ selectedDateRange, datasets }),
+    [selectedDateRange, datasets],
+  );
   useEffect(() => {
     if (!datasets?.length) return;
-    const [from, to] = selectedDateRange?.split('_') ?? [];
-
-    const [selectableDateStart, selectableDateEnd] =
-      getExtendedDateFromDatasets(datasets);
 
     startProcessing({
       datasets,
       temporalAggregation: selectedTemporalAggregation,
-      dateRange: selectedDateRange
-        ? ({
-            from: new Date(from),
-            to: new Date(to),
-          } as DateRange)
-        : selectableDateStart && selectableDateEnd
-          ? {
-              from: new Date(selectableDateStart),
-              to: new Date(selectableDateEnd),
-            }
-          : { from: undefined, to: undefined },
+      dateRange,
       timezone: currentBuilding?.timezone ?? 'Europe/Paris',
       buildingId: currentBuilding?.uuid ?? '',
     });
@@ -62,6 +51,7 @@ const useDataFormatterWebWorker = () => {
     currentBuilding?.timezone,
     startProcessing,
     currentBuilding?.uuid,
+    dateRange,
   ]);
 
   return {
