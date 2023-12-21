@@ -1,5 +1,6 @@
 import type { BasicFormattedDataset, TemporalAggregations } from '../lib/types';
-import { getDataAggregatedByTimeAggregation } from './getDataAggregatedByTimeAggregation';
+
+import { getTimeAggregation } from './getTimeAggregation';
 
 export const getTimeLabels = (
   data: BasicFormattedDataset[],
@@ -12,11 +13,9 @@ export const getTimeLabels = (
     return item.data.length > acc.data.length ? item : acc;
   }, data[0]);
 
-  const aggregatedTimestamps = getDataAggregatedByTimeAggregation(
-    longestDataset.data,
-    aggregationType,
-    timezone,
-  ).keys();
+  const aggregatedTimestamps = longestDataset.data.map(([timestamp]) => {
+    return getTimeAggregation(timestamp, aggregationType, timezone);
+  });
 
-  return [...aggregatedTimestamps];
+  return aggregatedTimestamps;
 };
