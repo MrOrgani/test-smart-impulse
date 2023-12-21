@@ -11,7 +11,7 @@ import { useTemporalAggregation } from './useTemporalAggregation';
 import { useWebWorker } from './useWebWorker';
 
 interface IProps {
-  datasets: FetchedDataset[] | undefined;
+  fetchedData: FetchedDataset[];
 }
 
 const workerInstance = new Worker(
@@ -21,7 +21,7 @@ const workerInstance = new Worker(
   },
 );
 
-const useDataFormatterWebWorker = ({ datasets }: IProps) => {
+const useDataFormatterWebWorker = ({ fetchedData }: IProps) => {
   const { currentBuilding } = useProjects();
   const [selectedTemporalAggregation] = useTemporalAggregation();
   const [selectedDateRange] = useDateRange();
@@ -32,14 +32,14 @@ const useDataFormatterWebWorker = ({ datasets }: IProps) => {
   } = useWebWorker<IWorkerResult, IWorkerRequest>(workerInstance);
 
   useEffect(() => {
-    if (!datasets?.length) return;
+    if (!fetchedData?.length) return;
     const [from, to] = selectedDateRange?.split('_') ?? [];
 
     const [selectableDateStart, selectableDateEnd] =
-      getExtendedDateFromDatasets(datasets);
+      getExtendedDateFromDatasets(fetchedData);
 
     startProcessing({
-      datasets: datasets,
+      datasets: fetchedData,
       temporalAggregation: selectedTemporalAggregation,
       dateRange: selectedDateRange
         ? ({
@@ -56,7 +56,7 @@ const useDataFormatterWebWorker = ({ datasets }: IProps) => {
       buildingId: currentBuilding?.uuid ?? '',
     });
   }, [
-    datasets,
+    fetchedData,
     selectedTemporalAggregation,
     selectedDateRange,
     currentBuilding?.timezone,
@@ -66,9 +66,7 @@ const useDataFormatterWebWorker = ({ datasets }: IProps) => {
 
   return {
     isLoading:
-      datasets &&
-      datasets.length > 0 &&
-      currentBuilding?.uuid !== currentDataBuildingId,
+      fetchedData.length > 0 && currentBuilding?.uuid !== currentDataBuildingId,
     basicDatasets: basicDatasets ?? [],
   };
 };

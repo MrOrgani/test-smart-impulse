@@ -1,18 +1,13 @@
 import React from 'react';
-
-import { useTemporalAggregation } from '@/hooks/useTemporalAggregation';
-import { useEnergyConsumption, useProjects } from '@/lib/react-query/queries';
+import { useDataContext } from '@/context/DataValueProvider';
 import { formatDate } from '@/utils/formatDate';
 import { getValueModifier } from '@/utils/getValueModifier';
-
-import { CardTitle } from '../ui/card';
 import { Skeleton } from '../ui/skeleton';
+import { useTemporalAggregation } from '@/hooks/useTemporalAggregation';
+import { CardTitle } from '../ui/card';
 
 export const MostExpensiveTemporalAggregationPerCategory = () => {
-  const { currentBuilding } = useProjects();
-  const { data: datasets, isLoading } = useEnergyConsumption(
-    currentBuilding?.uuid,
-  );
+  const { data: datasets, isLoading } = useDataContext();
   const [temporalAggregation] = useTemporalAggregation();
 
   if (isLoading) {
@@ -31,7 +26,7 @@ export const MostExpensiveTemporalAggregationPerCategory = () => {
     );
   }
 
-  const mostExpensiveTemporalPeriod = datasets?.map((dataset) => {
+  const mostExpensiveTemporalPeriod = datasets.map((dataset) => {
     // get the highest value for each category
     const highestValue = dataset.data.reduce(
       (acc, curr) => (acc[1] > curr[1] ? acc : curr),
@@ -52,8 +47,7 @@ export const MostExpensiveTemporalAggregationPerCategory = () => {
         Most expensive {temporalAggregation} per category
       </CardTitle>
       <div className="grid grid-cols-3 text-xs">
-        {mostExpensiveTemporalPeriod &&
-        mostExpensiveTemporalPeriod?.length > 0 ? (
+        {mostExpensiveTemporalPeriod.length > 0 ? (
           mostExpensiveTemporalPeriod.map((dataset) => {
             return (
               <React.Fragment key={dataset.label}>

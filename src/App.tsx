@@ -1,8 +1,9 @@
 import React from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
 
+import { Outlet, useLocation } from 'react-router-dom';
 import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
+import { DataValueProvider } from './context/DataValueProvider';
 import { useProjects } from './lib/react-query/queries';
 
 export const App: React.FC = () => {
@@ -31,7 +32,9 @@ export const App: React.FC = () => {
                     </h1>
                   </div>
                 ) : (
-                  <Outlet />
+                  <DataValueProvider>
+                    <Outlet />
+                  </DataValueProvider>
                 )}
               </div>
             </div>

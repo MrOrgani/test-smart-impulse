@@ -1,9 +1,10 @@
 import React from 'react';
 import { DateRange } from 'react-day-picker';
 
+import { useDataContext } from '@/context/DataValueProvider';
 import { useDateRange } from '@/hooks/useDateRange';
 import { useTemporalAggregation } from '@/hooks/useTemporalAggregation';
-import { useEnergyConsumption, useProjects } from '@/lib/react-query/queries';
+import { useProjects } from '@/lib/react-query/queries';
 import { getExtendedDateFromDatasets } from '@/utils/getExtendedDateFromDatasets';
 
 import { DatePickerWithRange } from './DateRangePicker';
@@ -11,16 +12,14 @@ import { DatePickerWithRange } from './DateRangePicker';
 export const DateSelector = () => {
   const [selectedDateRangeAsString, setDateRangeFilter] = useDateRange();
   const [temporalAggregation] = useTemporalAggregation();
+  const { data: fetchedData, isLoading } = useDataContext();
   const { currentBuilding } = useProjects();
-  const { data: datasets, isLoading } = useEnergyConsumption(
-    currentBuilding?.uuid,
-  );
 
   const [from, to] = selectedDateRangeAsString?.split('_') ?? [];
 
-  // get the longest data array property in the datasets array
+  // get the longest data array property in the fetchedData array
   const [selectableDateStart, selectableDateEnd] =
-    getExtendedDateFromDatasets(datasets);
+    getExtendedDateFromDatasets(fetchedData);
   const selectedDateRange = selectedDateRangeAsString
     ? ({
         from: new Date(from),

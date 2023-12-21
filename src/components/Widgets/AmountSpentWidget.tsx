@@ -1,15 +1,10 @@
 import React from 'react';
-
-import { useEnergyConsumption, useProjects } from '@/lib/react-query/queries';
+import { useDataContext } from '@/context/DataValueProvider';
 import { getValueModifier } from '@/utils/getValueModifier';
-
 import { Skeleton } from '../ui/skeleton';
 
 export const AmountSpentWidget: React.FC = () => {
-  const { currentBuilding } = useProjects();
-  const { data: datasets, isLoading } = useEnergyConsumption(
-    currentBuilding?.uuid,
-  );
+  const { data, isLoading } = useDataContext();
 
   if (isLoading) {
     return (
@@ -20,7 +15,7 @@ export const AmountSpentWidget: React.FC = () => {
     );
   }
 
-  const totalAmountSpent = datasets
+  const totalAmountSpent = data
     ?.find((dataset) => dataset.label === 'Energie totale')
     ?.data.reduce((acc, value) => acc + value[1], 0);
 
