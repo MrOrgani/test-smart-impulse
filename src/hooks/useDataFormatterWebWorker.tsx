@@ -19,7 +19,7 @@ const useDataFormatterWebWorker = () => {
   );
   const { currentBuilding } = useProjects();
 
-  const { data: fetchedData, isLoading } = useEnergyConsumption(
+  const { data: datasets, isLoading } = useEnergyConsumption(
     currentBuilding?.uuid,
   );
 
@@ -32,14 +32,14 @@ const useDataFormatterWebWorker = () => {
   } = useWebWorker<IWorkerResult, IWorkerRequest>(workerInstance);
 
   useEffect(() => {
-    if (!fetchedData?.length) return;
+    if (!datasets?.length) return;
     const [from, to] = selectedDateRange?.split('_') ?? [];
 
     const [selectableDateStart, selectableDateEnd] =
-      getExtendedDateFromDatasets(fetchedData);
+      getExtendedDateFromDatasets(datasets);
 
     startProcessing({
-      datasets: fetchedData,
+      datasets,
       temporalAggregation: selectedTemporalAggregation,
       dateRange: selectedDateRange
         ? ({
@@ -56,7 +56,7 @@ const useDataFormatterWebWorker = () => {
       buildingId: currentBuilding?.uuid ?? '',
     });
   }, [
-    fetchedData,
+    datasets,
     selectedTemporalAggregation,
     selectedDateRange,
     currentBuilding?.timezone,
@@ -68,8 +68,7 @@ const useDataFormatterWebWorker = () => {
     isLoading:
       isLoading ||
       !aggregatedDatasets ||
-      (aggregatedDatasets.length > 0 &&
-        currentBuilding?.uuid !== currentDataBuildingId),
+      currentBuilding?.uuid !== currentDataBuildingId,
     aggregatedDatasets: aggregatedDatasets ?? [],
   };
 };
