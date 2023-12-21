@@ -3,17 +3,12 @@ import type { DateRange } from 'react-day-picker';
 import type { FetchedDataset } from '../lib/types';
 
 export const applyDateRangeFilter = (
-  data: FetchedDataset[],
+  datasets: FetchedDataset[],
   dateRange: DateRange | undefined,
 ) => {
   if (dateRange?.from === undefined || dateRange?.to === undefined) {
-    return data;
+    return datasets;
   }
-
-  const localDatasets = data;
-  localDatasets.sort((a) => {
-    return a.type === 'total' ? 1 : -1;
-  });
 
   const { from, to } = dateRange;
   const startFilterRangeTimestamp = from.getTime();
@@ -21,8 +16,8 @@ export const applyDateRangeFilter = (
 
   const filteredDataSets = [];
 
-  for (let i = 0; i < localDatasets.length; i++) {
-    const dataset = localDatasets[i];
+  for (let i = 0; i < datasets.length; i++) {
+    const dataset = datasets[i];
 
     for (let j = 0; j < dataset.data.length; j++) {
       const item = dataset.data[j];

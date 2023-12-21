@@ -1,3 +1,5 @@
+import { FetchedDataset } from '@/lib/types';
+
 export const getBuildings = async () => {
   const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/projects`);
   const data = await res.json();
@@ -13,6 +15,9 @@ export const getEneryConsumptionByBuildingId = async (
   const res = await fetch(
     `${import.meta.env.VITE_SERVER_URL}/api/energy?uuid=${buildingId}`,
   );
-  const datasets = await res.json();
+  const datasets = (await res.json()) as FetchedDataset[];
+  datasets.sort((a) => {
+    return a.type === 'total' ? 1 : -1;
+  });
   return datasets;
 };
