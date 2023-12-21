@@ -24,6 +24,11 @@ export const stackedBarChartFormatter = (
       tooltip: [],
     };
 
+    const highestTotalValue =
+      formattedDataset.datasetType === 'total'
+        ? Math.max(...datasets[datasetIndex].data.map(([, value]) => value))
+        : 0;
+
     for (
       let datumIndex = 0;
       datumIndex < datasets[datasetIndex].data.length;
@@ -32,8 +37,8 @@ export const stackedBarChartFormatter = (
       const [, value] = datasets[datasetIndex].data[datumIndex];
 
       formattedDataset.data.push(
-        formattedDataset.datasetType === 'total'
-          ? valueModifier(value) / 100
+        formattedDataset.datasetType === 'total' && value > 0
+          ? valueModifier(highestTotalValue) / 100 // We want to display total as a line
           : valueModifier(value),
       );
       formattedDataset.tooltip.push(valueModifier(value));
