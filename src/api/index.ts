@@ -1,7 +1,11 @@
 import { FetchedDataset } from '@/lib/types';
 
 export const getBuildings = async () => {
-  const res = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/projects`);
+  const res = await fetch(
+    `${
+      import.meta.env.VITE_SERVER_URL ?? 'http://localhost:4000'
+    }/api/projects`,
+  );
   const data = await res.json();
   return data;
 };
@@ -13,7 +17,9 @@ export const getEneryConsumptionByBuildingId = async (
     return [];
   }
   const res = await fetch(
-    `${import.meta.env.VITE_SERVER_URL}/api/energy?uuid=${buildingId}`,
+    `${
+      import.meta.env.VITE_SERVER_URL ?? 'http://localhost:4000'
+    }/api/energy?uuid=${buildingId}`,
   );
   const datasets = (await res.json()) as FetchedDataset[];
   datasets.sort((a) => {
