@@ -1,8 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { DateRange } from 'react-day-picker';
 
-import { useProjects } from '@/lib/react-query/queries';
-import { FetchedDataset } from '@/lib/types';
+import { useEnergyConsumption, useProjects } from '@/lib/react-query/queries';
 import { IWorkerRequest, IWorkerResult } from '@/utils/formatScript';
 import { getExtendedDateFromDatasets } from '@/utils/getExtendedDateFromDatasets';
 
@@ -10,24 +9,25 @@ import { useDateRange } from './useDateRange';
 import { useTemporalAggregation } from './useTemporalAggregation';
 import { useWebWorker } from './useWebWorker';
 
-interface IProps {
-  fetchedData: FetchedDataset[];
-}
-
-const workerInstance = new Worker(
-  new URL('../utils/formatScript.ts', import.meta.url),
-  {
-    type: 'module',
-  },
-);
-
-const useDataFormatterWebWorker = ({ fetchedData }: IProps) => {
+const useDataFormatterWebWorker = () => {
+  const workerInstance = useMemo(
+    () =>
+      new Worker(new URL('../utils/formatScript.ts', import.meta.url), {
+        type: 'module',
+      }),
+    [],
+  );
   const { currentBuilding } = useProjects();
+
+  const { data: fetchedData, isLoading } = useEnergyConsumption(
+    currentBuilding?.uuid,
+  );
+
   const [selectedTemporalAggregation] = useTemporalAggregation();
   const [selectedDateRange] = useDateRange();
 
   const {
-    result: { basicDatasets, buildingId: currentDataBuildingId } = {},
+    result: { aggregatedDatasets, buildingId: currentDataBuildingId } = {},
     startProcessing,
   } = useWebWorker<IWorkerResult, IWorkerRequest>(workerInstance);
 
@@ -66,8 +66,11 @@ const useDataFormatterWebWorker = ({ fetchedData }: IProps) => {
 
   return {
     isLoading:
-      fetchedData.length > 0 && currentBuilding?.uuid !== currentDataBuildingId,
-    basicDatasets: basicDatasets ?? [],
+      isLoading ||
+      !aggregatedDatasets ||
+      (aggregatedDatasets.length > 0 &&
+        currentBuilding?.uuid !== currentDataBuildingId),
+    aggregatedDatasets: aggregatedDatasets ?? [],
   };
 };
 

@@ -1,36 +1,27 @@
 import React, { useMemo } from 'react';
 
-import { useEnergyConsumption, useProjects } from '@/lib/react-query/queries';
-import type { FetchedDataset } from '@/lib/types';
+import useDataFormatterWebWorker from '@/hooks/useDataFormatterWebWorker';
+import type { AggregatedDataset } from '@/lib/types';
 
 const DataContext = React.createContext<{
-  data: FetchedDataset[];
+  data: AggregatedDataset[];
   isLoading: boolean;
-  isFetching: boolean;
 }>({
   data: [],
   isLoading: true,
-  isFetching: true,
 });
 
 export const DataValueProvider: React.FC<{
   children: React.ReactElement;
 }> = ({ children }) => {
-  const { currentBuilding } = useProjects();
-  const { data: fetchedData, ...restFetchedData } = useEnergyConsumption(
-    currentBuilding?.uuid,
-  );
+  const { aggregatedDatasets, isLoading } = useDataFormatterWebWorker();
 
   const value = useMemo(() => {
     return {
-      data: fetchedData ?? [],
-      ...restFetchedData,
-      isLoading:
-        restFetchedData.isLoading ||
-        restFetchedData.isFetching ||
-        !currentBuilding,
+      data: aggregatedDatasets ?? [],
+      isLoading,
     };
-  }, [currentBuilding, fetchedData, restFetchedData]);
+  }, [aggregatedDatasets, isLoading]);
 
   return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
 };

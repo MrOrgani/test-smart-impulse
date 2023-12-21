@@ -6,7 +6,7 @@ import { getValueModifier } from '@/utils/getValueModifier';
 import { Skeleton } from '../ui/skeleton';
 
 export const MostExpensiveCategoryWidget = () => {
-  const { data, isLoading } = useDataContext();
+  const { data: datasets, isLoading } = useDataContext();
 
   if (isLoading) {
     return (
@@ -17,7 +17,7 @@ export const MostExpensiveCategoryWidget = () => {
     );
   }
 
-  const reducedDataCategories = data
+  const reducedDataCategories = datasets
     .filter((dataset) => dataset.label !== 'Energie totale')
     ?.map((dataset) => ({
       ...dataset,

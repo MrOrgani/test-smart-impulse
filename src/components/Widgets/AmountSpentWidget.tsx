@@ -1,10 +1,12 @@
 import React from 'react';
+
 import { useDataContext } from '@/context/DataValueProvider';
 import { getValueModifier } from '@/utils/getValueModifier';
+
 import { Skeleton } from '../ui/skeleton';
 
 export const AmountSpentWidget: React.FC = () => {
-  const { data, isLoading } = useDataContext();
+  const { data: datasets, isLoading } = useDataContext();
 
   if (isLoading) {
     return (
@@ -15,7 +17,7 @@ export const AmountSpentWidget: React.FC = () => {
     );
   }
 
-  const totalAmountSpent = data
+  const totalAmountSpent = datasets
     ?.find((dataset) => dataset.label === 'Energie totale')
     ?.data.reduce((acc, value) => acc + value[1], 0);
 

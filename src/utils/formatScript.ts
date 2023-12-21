@@ -6,7 +6,7 @@ import { aggregateDatasets } from './aggregateDatasets';
 import { applyDateRangeFilter } from './applyDateRangeFilter';
 
 export type IWorkerResult = {
-  basicDatasets: AggregatedDataset[];
+  aggregatedDatasets: AggregatedDataset[];
   buildingId: string;
 };
 
@@ -29,5 +29,7 @@ onmessage = (e) => {
     timezone,
   );
 
-  postMessage({ result: { basicDatasets: aggregatedDatasets, buildingId } });
+  postMessage({
+    result: { aggregatedDatasets, buildingId },
+  });
 };

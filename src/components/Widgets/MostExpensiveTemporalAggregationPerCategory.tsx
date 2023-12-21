@@ -1,13 +1,16 @@
 import React from 'react';
+
 import { useDataContext } from '@/context/DataValueProvider';
+import { useTemporalAggregation } from '@/hooks/useTemporalAggregation';
 import { formatDate } from '@/utils/formatDate';
 import { getValueModifier } from '@/utils/getValueModifier';
-import { Skeleton } from '../ui/skeleton';
-import { useTemporalAggregation } from '@/hooks/useTemporalAggregation';
+
 import { CardTitle } from '../ui/card';
+import { Skeleton } from '../ui/skeleton';
 
 export const MostExpensiveTemporalAggregationPerCategory = () => {
   const { data: datasets, isLoading } = useDataContext();
+
   const [temporalAggregation] = useTemporalAggregation();
 
   if (isLoading) {
@@ -25,12 +28,11 @@ export const MostExpensiveTemporalAggregationPerCategory = () => {
       </div>
     );
   }
-
   const mostExpensiveTemporalPeriod = datasets.map((dataset) => {
     // get the highest value for each category
     const highestValue = dataset.data.reduce(
       (acc, curr) => (acc[1] > curr[1] ? acc : curr),
-      [0, 0],
+      ['', 0],
     );
 
     return {
