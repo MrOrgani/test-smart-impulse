@@ -36,13 +36,12 @@ export const DatePickerWithRange: React.FC<DatePickerProps> = ({
   temporalAggregation,
   timezone,
 }) => {
-  const [dateRange, setDateRange] = React.useState<DateRange | undefined>(
-    selectedDateRange,
-  );
+  const [dateRange, setDateRange] = React.useState<DateRange | undefined>();
 
   React.useEffect(() => {
+    if (isLoading) return setDateRange(undefined);
     setDateRange(selectedDateRange);
-  }, [selectedDateRange]);
+  }, [isLoading, selectedDateRange]);
 
   const disabledDays = {
     before: dayjs(selectableDateRange?.from).toDate(),
@@ -72,7 +71,8 @@ export const DatePickerWithRange: React.FC<DatePickerProps> = ({
           variant={'outline'}
           className={cn(
             'justify-start text-left font-normal  bg-white border-0 rounded-none border-b-2 h-auto mx-2 py-0 px-0',
-            selectedDateRange === undefined && 'text-muted-foreground',
+            selectedDateRange === undefined &&
+              'text-muted-foreground' + className,
           )}
           disabled={selectedDateRange === undefined}
         >
