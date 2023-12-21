@@ -16,20 +16,14 @@ export const DataValueProvider: React.FC<{
 }> = ({ children }) => {
   const { aggregatedDatasets, isLoading } = useDataFormatterWebWorker();
 
-  const value = useMemo(() => {
-    return {
-      data: aggregatedDatasets ?? [],
-      isLoading,
-    };
-  }, [aggregatedDatasets, isLoading]);
-
-  return <DataContext.Provider value={value}>{children}</DataContext.Provider>;
+  return (
+    <DataContext.Provider value={{ data: aggregatedDatasets, isLoading }}>
+      {children}
+    </DataContext.Provider>
+  );
 };
 
 export const useDataContext = () => {
-  const { data, ...rest } = React.useContext(DataContext);
-  return {
-    data,
-    ...rest,
-  };
+  const value = React.useContext(DataContext);
+  return value;
 };
