@@ -7,14 +7,12 @@ import { Chart } from 'react-chartjs-2';
 
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useDataContext } from '@/context/DataValueProvider';
 import useDataFormatterWebWorker from '@/hooks/useDataFormatterWebWorker';
 import { useMeasureUnit } from '@/hooks/useMeasureUnit';
 import { useTemporalAggregation } from '@/hooks/useTemporalAggregation';
-import { useProjects } from '@/lib/react-query/queries';
+import { useEnergyConsumption, useProjects } from '@/lib/react-query/queries';
 import type { ArrayElement } from '@/lib/types';
 import { formatDate } from '@/utils/formatDate';
-import { getTimeLabels } from '@/utils/getTimeLabels';
 import { getValueModifier } from '@/utils/getValueModifier';
 
 import { stackedBarChartFormatter } from './utils';
@@ -23,24 +21,25 @@ ChartJS.register(...registerables, zoomPlugin);
 
 export const StackedBarChart: React.FC = () => {
   const { currentBuilding } = useProjects();
-  const { data: fetchedData, isLoading } = useDataContext();
+  const { data: datasets, isLoading } = useEnergyConsumption(
+    currentBuilding?.uuid,
+  );
 
-  const { basicDatasets: datasets, isLoading: webWorkerLoading } =
+  const { basicDatasets: aggregatedDatasets, isLoading: webWorkerLoading } =
     useDataFormatterWebWorker({
-      fetchedData,
+      datasets,
     });
 
   const [selectedTemporalAggregation] = useTemporalAggregation();
   const [measureUnit] = useMeasureUnit();
 
   const valueModifier = getValueModifier(measureUnit);
-  const formattedDatasets = stackedBarChartFormatter(datasets, valueModifier);
-
-  const labels = getTimeLabels(
-    datasets ?? [],
-    selectedTemporalAggregation,
-    currentBuilding?.timezone ?? 'Europe/Paris',
+  const formattedDatasets = stackedBarChartFormatter(
+    aggregatedDatasets,
+    valueModifier,
   );
+
+  const labels = datasets?.[0]?.data.map((d) => d[0]) ?? [];
 
   const [showLegend, setShowLegend] = React.useState(false);
 

@@ -1,12 +1,15 @@
 import React from 'react';
 
-import { useDataContext } from '@/context/DataValueProvider';
+import { useEnergyConsumption, useProjects } from '@/lib/react-query/queries';
 import { getValueModifier } from '@/utils/getValueModifier';
 
 import { Skeleton } from '../ui/skeleton';
 
 export const MostExpensiveCategoryWidget = () => {
-  const { data, isLoading } = useDataContext();
+  const { currentBuilding } = useProjects();
+  const { data: datasets, isLoading } = useEnergyConsumption(
+    currentBuilding?.uuid,
+  );
 
   if (isLoading) {
     return (
@@ -17,15 +20,15 @@ export const MostExpensiveCategoryWidget = () => {
     );
   }
 
-  const reducedDataCategories = data
-    .filter((dataset) => dataset.label !== 'Energie totale')
+  const reducedDataCategories = datasets
+    ?.filter((dataset) => dataset.label !== 'Energie totale')
     ?.map((dataset) => ({
       ...dataset,
       data: dataset.data?.reduce((acc, value) => acc + value[1], 0),
     }))
     .sort((a, b) => b.data - a.data);
 
-  const mostExpensiveCategory = reducedDataCategories[0];
+  const mostExpensiveCategory = reducedDataCategories?.[0];
   const amount = getValueModifier('euros')(
     mostExpensiveCategory?.data ?? 0,
   ).toFixed(2);

@@ -1,7 +1,7 @@
-import type { FetchedDataset } from '@/lib/types';
+import type { AggregatedDataset } from '@/lib/types';
 
 interface IStackedBarChartDataset {
-  datasetType: FetchedDataset['type'];
+  datasetType: AggregatedDataset['type'];
   label: string;
   backgroundColor: string;
   data: number[];
@@ -9,7 +9,7 @@ interface IStackedBarChartDataset {
 }
 
 export const stackedBarChartFormatter = (
-  datasets: FetchedDataset[],
+  datasets: AggregatedDataset[],
   valueModifier: (value: number, MWhPrice?: number) => number,
 ): Array<IStackedBarChartDataset> => {
   if (!datasets?.length) return [];
