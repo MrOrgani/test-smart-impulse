@@ -20,8 +20,8 @@ export const MostExpensiveTemporalAggregationPerCategory = () => {
           return (
             <React.Fragment key={index}>
               <Skeleton className="w-20 h-4" />
-              <Skeleton className="w-20 h-4" />
-              <Skeleton className="w-20 h-4" />
+              <Skeleton className="w-20 h-4 ml-auto" />
+              <Skeleton className="w-20 h-4 ml-auto" />
             </React.Fragment>
           );
         })}
