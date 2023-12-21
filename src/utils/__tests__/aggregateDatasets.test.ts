@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import dayjsTimezone from 'dayjs/plugin/timezone';
 import dayjsUtc from 'dayjs/plugin/utc';
 
-import type { AggregatedDataset } from '@/lib/types';
+import type { FetchedDataset } from '@/lib/types';
 
 import { aggregateDatasets } from '../aggregateDatasets';
 
@@ -11,11 +11,19 @@ dayjs.extend(dayjsTimezone);
 
 describe('aggregateDatasets', () => {
   it('should return an empty array if datasets is empty', () => {
-    const datasets: AggregatedDataset[] = [];
+    const datasets: FetchedDataset[] = [];
     const aggregationType = 'day';
     const timezone = 'Europe/Paris';
 
-    const result = aggregateDatasets(datasets, aggregationType, timezone);
+    const result = aggregateDatasets(
+      datasets,
+      aggregationType,
+      {
+        from: dayjs(1627833600000).toDate(),
+        to: dayjs(1628006400000).toDate(),
+      },
+      timezone,
+    );
 
     expect(result).toEqual([]);
   });
@@ -42,11 +50,19 @@ describe('aggregateDatasets', () => {
           [1628006400000, 25], // 2021-08-03T16:00:00.000Z Tuesday in timestamp is 1628006400000
         ],
       },
-    ] as AggregatedDataset[];
+    ] as FetchedDataset[];
     const aggregationType = 'month';
     const timezone = 'Europe/Paris';
 
-    const result = aggregateDatasets(datasets, aggregationType, timezone);
+    const result = aggregateDatasets(
+      datasets,
+      aggregationType,
+      {
+        from: dayjs(1627833600000).toDate(),
+        to: dayjs(1628006400000).toDate(),
+      },
+      timezone,
+    );
 
     expect(result).toEqual([
       {
