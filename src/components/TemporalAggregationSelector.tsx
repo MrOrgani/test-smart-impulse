@@ -1,14 +1,16 @@
-import React from "react";
-import { Label } from "./ui/label";
+import React from 'react';
+
+import { useTemporalAggregation } from '@/hooks/useTemporalAggregation';
+import type { TemporalAggregations } from '@/lib/types';
+
+import { Label } from './ui/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./ui/select";
-import { useTemporalAggregation } from "@/hooks/useTemporalAggregation";
-import type { TemporalAggregations } from "@/lib/types";
+} from './ui/select';
 
 export const TemporalAggregationSelector: React.FC = () => {
   const [selectedTemporalAggregation, setSelectedTemporalAggregation] =
@@ -28,7 +30,7 @@ export const TemporalAggregationSelector: React.FC = () => {
         <SelectTrigger
           id="temporalAggragtion"
           className={
-            "w-auto  m-0 p-0 border-0 rounded-none border-b-2 h-auto mx-2"
+            'w-auto  m-0 p-0 border-0 rounded-none border-b-2 h-auto mx-2'
           }
         >
           <SelectValue placeholder="Select" />

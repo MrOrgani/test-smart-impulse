@@ -1,15 +1,17 @@
-import React from "react";
+import React from 'react';
+
+import { useMeasureUnit } from '@/hooks/useMeasureUnit';
+import type { MeasureUnit } from '@/lib/types';
+
 import {
   Select,
-  SelectTrigger,
-  SelectValue,
   SelectContent,
   SelectItem,
-} from "./ui/select";
-import type { MeasureUnit } from "@/lib/types";
-import { useMeasureUnit } from "@/hooks/useMeasureUnit";
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
 
-const measurementUnitOptions = { MWh: "MWh", kWh: "kWh", euros: "€" };
+const measurementUnitOptions = { MWh: 'MWh', kWh: 'kWh', euros: '€' };
 
 interface Props {
   options?: Array<[string, MeasureUnit]>;
@@ -30,7 +32,7 @@ export const MeasurementUnitSelector: React.FC<Props> = ({
     >
       <SelectTrigger
         className={
-          "w-auto  m-0 p-0 border-0 rounded-none border-b-2 h-auto mx-2"
+          'w-auto  m-0 p-0 border-0 rounded-none border-b-2 h-auto mx-2'
         }
       >
         <SelectValue placeholder="Select" />

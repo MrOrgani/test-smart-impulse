@@ -1,9 +1,8 @@
 import * as React from 'react';
+import dayjs from 'dayjs';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import type { DateRange } from 'react-day-picker';
 
-import { cn } from '@/utils/utils';
-import { formatDate } from '@/utils/formatDate';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
@@ -11,9 +10,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import dayjs from 'dayjs';
-import { Skeleton } from './ui/skeleton';
 import type { TemporalAggregations } from '@/lib/types';
+import { formatDate } from '@/utils/formatDate';
+import { cn } from '@/utils/utils';
+
+import { Skeleton } from './ui/skeleton';
 
 interface DatePickerProps {
   className?: string;

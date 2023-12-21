@@ -1,6 +1,8 @@
-import React from "react";
-import { Checkbox } from "./ui/checkbox";
-import { useSimilarDateRange } from "@/hooks/useSimilarDateRange";
+import React from 'react';
+
+import { useSimilarDateRange } from '@/hooks/useSimilarDateRange';
+
+import { Checkbox } from './ui/checkbox';
 
 export const SameDateRangeCheckbox = () => {
   const [similarDateRange, setSimilarDateRange] = useSimilarDateRange();
@@ -10,7 +12,7 @@ export const SameDateRangeCheckbox = () => {
       <Checkbox
         id="similar-date-range"
         defaultChecked={false}
-        checked={similarDateRange === "true"}
+        checked={similarDateRange === 'true'}
         onCheckedChange={(checked) => {
           setSimilarDateRange(checked);
         }}

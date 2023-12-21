@@ -1,13 +1,14 @@
 import React from 'react';
+
+import { StackedBarChart } from './charts/StackedBarChart';
 import { Card, CardContent, CardTitle } from './ui/card';
-import { StackedBarChart } from './charts/StackedBarChart/StackedBarChart';
-import { DateSelector } from './DateSelector';
-import { TemporalAggregationSelector } from './TemporalAggregationSelector';
-import { ResetButton } from './ResetButton';
-import { MeasurementUnitSelector } from './MeasurementUnitSelector';
 import { AmountSpentWidget } from './widgets/AmountSpentWidget';
 import { MostExpensiveCategoryWidget } from './widgets/MostExpensiveCategoryWidget';
 import { MostExpensiveTemporalAggregationPerCategory } from './widgets/MostExpensiveTemporalAggregationPerCategory';
+import { DateSelector } from './DateSelector';
+import { MeasurementUnitSelector } from './MeasurementUnitSelector';
+import { ResetButton } from './ResetButton';
+import { TemporalAggregationSelector } from './TemporalAggregationSelector';
 
 export const Dashboard: React.FC = () => {
   return (
