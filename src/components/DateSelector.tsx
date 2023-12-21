@@ -12,14 +12,14 @@ import { DatePickerWithRange } from './DateRangePicker';
 export const DateSelector = () => {
   const [selectedDateRangeAsString, setDateRangeFilter] = useDateRange();
   const [temporalAggregation] = useTemporalAggregation();
-  const { data: fetchedData, isLoading } = useDataContext();
+  const { data: aggregatedDatasets, isLoading } = useDataContext();
   const { currentBuilding } = useProjects();
 
   const [from, to] = selectedDateRangeAsString?.split('_') ?? [];
 
   // get the longest data array property in the fetchedData array
   const [selectableDateStart, selectableDateEnd] =
-    getExtendedDateFromDatasets(fetchedData);
+    getExtendedDateFromDatasets(aggregatedDatasets);
   const selectedDateRange = selectedDateRangeAsString
     ? ({
         from: new Date(from),
